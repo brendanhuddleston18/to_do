@@ -15,7 +15,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const CupertinoApp(
-      home: Home(),
+      home: Home(
+        onDeleteTask: (String taskToDelete, List listToRemove) {
+          setState(() {
+            listToRemove.remove(taskToDelete)
+          })
+        },
+      ),
       debugShowCheckedModeBanner: false,
       );
   }

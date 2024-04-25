@@ -4,7 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({super.key, required this.onDeleteTask});
+
+  final Function(String) onDeleteTask;
 
   @override
   State<Home> createState() => _HomeWidgetState();
@@ -13,11 +15,15 @@ class Home extends StatefulWidget {
 class _HomeWidgetState extends State<Home> {
   List<String> tasks = [];
 
+  void handleDelete(task) {
+    tasks.remove(task);
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
-          backgroundColor: Color.fromARGB(255, 79, 152, 189),
+          backgroundColor: Color.fromRGBO(0, 127, 255, 1),
           leading: Text("Panel"),
           middle: Text("Brendan's To Do List")),
       child: Stack(
@@ -28,10 +34,10 @@ class _HomeWidgetState extends State<Home> {
                 for (String task in tasks)
                   CupertinoListTile(
                     title: Text(task),
-                    leading: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: CupertinoColors.activeGreen,
+                    leading: const Icon(CupertinoIcons.checkmark),
+                    trailing: IconButton(
+                      onPressed: ,
+                      icon: const Icon(CupertinoIcons.delete),
                     ),
                   ),
               ]),
