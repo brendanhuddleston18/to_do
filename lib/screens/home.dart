@@ -4,20 +4,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key, required this.onDeleteTask});
-
-  final Function(String) onDeleteTask;
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeWidgetState();
 }
 
 class _HomeWidgetState extends State<Home> {
-  List<String> tasks = [];
+  List<Map> tasks = [];
 
-  void handleDelete(task) {
-    tasks.remove(task);
-  }
+  int counter = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +27,19 @@ class _HomeWidgetState extends State<Home> {
           CupertinoListSection(
               header: const Text('My Reminders'),
               children: <CupertinoListTile>[
-                for (String task in tasks)
+                for (Map task in tasks)
                   CupertinoListTile(
-                    title: Text(task),
+                    title: Text(task["task"]),
                     leading: const Icon(CupertinoIcons.checkmark),
-                    trailing: IconButton(
-                      onPressed: ,
-                      icon: const Icon(CupertinoIcons.delete),
+                    trailing: DeleteWidget(
+                      taskID: task["id"],
+                      onDeleteTask: (int id) {
+                        setState(
+                          () {
+                            tasks.removeWhere((task) => task["id"] == id);
+                          },
+                        );
+                      },
                     ),
                   ),
               ]),
@@ -50,9 +52,15 @@ class _HomeWidgetState extends State<Home> {
                 ),
                 child: TextInputWidget(
                   onAddTask: (String newTask) {
-                    setState(() {
-                      (tasks.add(newTask));
-                    });
+                    Map<String, dynamic> map = {};
+                    map["id"] = counter;
+                    map["task"] = newTask;
+                    setState(
+                      () {
+                        (tasks.add(map));
+                        counter += 1;
+                      },
+                    );
                   },
                 ),
               ))
@@ -79,9 +87,33 @@ class _TextInputWidgetState extends State<TextInputWidget> {
     return CupertinoTextField(
         controller: controller,
         placeholder: "Enter a task!",
-        prefix: IconButton(
+        suffix: IconButton(
           onPressed: () => widget.onAddTask(controller.text),
-          icon: const Icon(CupertinoIcons.add),
+          icon: const Icon(CupertinoIcons.paperplane),
         ));
+  }
+}
+
+class DeleteWidget extends StatefulWidget {
+  const DeleteWidget({
+    super.key,
+    required this.onDeleteTask,
+    required this.taskID,
+  });
+
+  final Function(int taskID) onDeleteTask;
+  final int taskID;
+
+  @override
+  State<DeleteWidget> createState() => _DeleteWidgetState();
+}
+
+class _DeleteWidgetState extends State<DeleteWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () => widget.onDeleteTask(widget.taskID),
+      icon: const Icon(CupertinoIcons.delete),
+    );
   }
 }
