@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +15,17 @@ class Home extends StatefulWidget {
 class _HomeWidgetState extends State<Home> {
   List<Map> tasks = [];
 
+  bool checked = false;
+
   int counter = 1;
+
+  void handleChecked(checked) {
+    if (checked){
+      checked = false;
+    } else {
+      checked = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +42,7 @@ class _HomeWidgetState extends State<Home> {
                 for (Map task in tasks)
                   CupertinoListTile(
                     title: Text(task["task"]),
-                    leading: const Icon(CupertinoIcons.checkmark),
+                    leading: Checkbox(value: checked, onChanged: ()=>handleChecked(checked)),
                     trailing: DeleteWidget(
                       taskID: task["id"],
                       onDeleteTask: (int id) {
@@ -115,5 +127,20 @@ class _DeleteWidgetState extends State<DeleteWidget> {
       onPressed: () => widget.onDeleteTask(widget.taskID),
       icon: const Icon(CupertinoIcons.delete),
     );
+  }
+}
+
+
+class Checkmark extends StatefulWidget {
+  const Checkmark({super.key});
+
+  @override
+  State<Checkmark> createState() => _CheckmarkState();
+}
+
+class _CheckmarkState extends State<Checkmark> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }
