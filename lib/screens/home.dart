@@ -15,16 +15,10 @@ class Home extends StatefulWidget {
 class _HomeWidgetState extends State<Home> {
   List<Map> tasks = [];
 
-  bool checked = false;
-
   int counter = 1;
 
-  void handleChecked(checked) {
-    if (checked){
-      checked = false;
-    } else {
-      checked = true;
-    }
+  void handleChecked(bool? value, int index) {
+    setState(() => tasks[index]["isChecked"] = value);
   }
 
   @override
@@ -39,12 +33,15 @@ class _HomeWidgetState extends State<Home> {
           CupertinoListSection(
               header: const Text('My Reminders'),
               children: <CupertinoListTile>[
-                for (Map task in tasks)
+                for (int i = 0; i < tasks.length; i++)
                   CupertinoListTile(
-                    title: Text(task["task"]),
-                    leading: Checkbox(value: checked, onChanged: ()=>handleChecked(checked)),
+                    title: Text(tasks[i]["task"]),
+                    leading: CupertinoCheckbox(
+                      value: tasks[i]["isChecked"],
+                      onChanged: (newValue) => handleChecked(newValue, i),
+                    ),
                     trailing: DeleteWidget(
-                      taskID: task["id"],
+                      taskID: tasks[i]["id"],
                       onDeleteTask: (int id) {
                         setState(
                           () {
@@ -67,6 +64,7 @@ class _HomeWidgetState extends State<Home> {
                     Map<String, dynamic> map = {};
                     map["id"] = counter;
                     map["task"] = newTask;
+                    map["isChecked"] = false;
                     setState(
                       () {
                         (tasks.add(map));
@@ -129,7 +127,6 @@ class _DeleteWidgetState extends State<DeleteWidget> {
     );
   }
 }
-
 
 class Checkmark extends StatefulWidget {
   const Checkmark({super.key});
