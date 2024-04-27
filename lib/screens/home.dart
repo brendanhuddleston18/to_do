@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +17,10 @@ class _HomeWidgetState extends State<Home> {
 
   int counter = 1;
 
+  void handleChecked(bool? value, int index) {
+    setState(() => tasks[index]["isChecked"] = value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -27,12 +33,15 @@ class _HomeWidgetState extends State<Home> {
           CupertinoListSection(
               header: const Text('My Reminders'),
               children: <CupertinoListTile>[
-                for (Map task in tasks)
+                for (int i = 0; i < tasks.length; i++)
                   CupertinoListTile(
-                    title: Text(task["task"]),
-                    leading: const Icon(CupertinoIcons.checkmark),
+                    title: Text(tasks[i]["task"]),
+                    leading: CupertinoCheckbox(
+                      value: tasks[i]["isChecked"],
+                      onChanged: (newValue) => handleChecked(newValue, i),
+                    ),
                     trailing: DeleteWidget(
-                      taskID: task["id"],
+                      taskID: tasks[i]["id"],
                       onDeleteTask: (int id) {
                         setState(
                           () {
@@ -55,6 +64,7 @@ class _HomeWidgetState extends State<Home> {
                     Map<String, dynamic> map = {};
                     map["id"] = counter;
                     map["task"] = newTask;
+                    map["isChecked"] = false;
                     setState(
                       () {
                         (tasks.add(map));
@@ -115,5 +125,19 @@ class _DeleteWidgetState extends State<DeleteWidget> {
       onPressed: () => widget.onDeleteTask(widget.taskID),
       icon: const Icon(CupertinoIcons.delete),
     );
+  }
+}
+
+class Checkmark extends StatefulWidget {
+  const Checkmark({super.key});
+
+  @override
+  State<Checkmark> createState() => _CheckmarkState();
+}
+
+class _CheckmarkState extends State<Checkmark> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }
