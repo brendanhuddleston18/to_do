@@ -1,9 +1,11 @@
 import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:to_do/models/task_model.dart';
+
+
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -19,6 +21,12 @@ class _HomeWidgetState extends State<Home> {
 
   void handleChecked(bool? value, int index) {
     setState(() => tasks[index]["isChecked"] = value);
+  }
+
+  Future<void> insertTask(Task task) async {
+    final db = await database;
+
+    await db.insert()
   }
 
   @override
