@@ -4,11 +4,20 @@ class Task {
   final bool isChecked;
   final String timeCreated;
 
-  const Task({
+   Task({
     required this.id,
     required this.task,
     required this.isChecked,
     required this.timeCreated,
   });
+
+  Map<String, Object?> toMap(){
+    return {
+      'id': id,
+      'task': task,
+      'isChecked': isChecked,
+      'timeCreated': timeCreated,
+    };
+  }
 }
 
