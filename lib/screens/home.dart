@@ -25,9 +25,11 @@ class _HomeWidgetState extends State<Home> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
-          backgroundColor: Color.fromRGBO(0, 127, 255, 1),
-          leading: Text("Panel"),
-          middle: Text("Brendan's To Do List")),
+        backgroundColor: Color.fromRGBO(0, 127, 255, 1),
+        leading: Text("Panel"),
+        middle: Text("Brendan's To Do List"),
+        trailing: Text("Time"),
+      ),
       child: Stack(
         children: [
           CupertinoListSection(
@@ -36,6 +38,7 @@ class _HomeWidgetState extends State<Home> {
                 for (int i = 0; i < tasks.length; i++)
                   CupertinoListTile(
                     title: Text(tasks[i]["task"]),
+                    subtitle: Text(tasks[i]["timeCreated"]),
                     leading: CupertinoCheckbox(
                       value: tasks[i]["isChecked"],
                       onChanged: (newValue) => handleChecked(newValue, i),
@@ -61,10 +64,12 @@ class _HomeWidgetState extends State<Home> {
                 ),
                 child: TextInputWidget(
                   onAddTask: (String newTask) {
+                    dynamic timeCreated = DateTime.now();
                     Map<String, dynamic> map = {};
                     map["id"] = counter;
                     map["task"] = newTask;
                     map["isChecked"] = false;
+                    map["timeCreated"] = timeCreated.toString();
                     setState(
                       () {
                         (tasks.add(map));
