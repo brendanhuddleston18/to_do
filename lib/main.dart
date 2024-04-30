@@ -13,7 +13,7 @@ void main() async {
     join(await getDatabasesPath(), 'tasks_database.db'),
     onCreate: (db, version) {
       return db.execute(
-          'CREATE TABLE tasks(id INTEGER PRIMARY KEY, task TEXT, timeCreated TEXT)');
+          'CREATE TABLE tasks(id INTEGER PRIMARY KEY, task TEXT, isChecked BOOLEAN, timeCreated TEXT)');
     },
     version: 1,
   );
@@ -28,16 +28,34 @@ void main() async {
     );
   }
 
-  runApp(const MyApp());
+  Future<List<Task>> tasks() async {
+    final db = await database;
+
+    final List<Map<String, Object?>> taskMaps = await db.query('tasks');
+
+     return taskMaps.map((taskMap) {
+      return Task(
+        id: taskMap['id'] as int,
+        task: taskMap['task'] as String,
+        isChecked: taskMap['isChecked'] == 1,
+        timeCreated: taskMap['timeCreated'] as String,
+      );
+    }).toList();
+  }
+
+  runApp(MyApp(insertTask: insertTask, tasks: tasks,));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.tasks, required this.insertTask});
+
+  final Future<void> Function(Task task) insertTask;
+  final Future<List<Task>> Function() tasks;
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
-      home: Home(),
+    return CupertinoApp(
+      home: Home(insertTask: insertTask, tasksDB: tasks,),
       debugShowCheckedModeBanner: false,
     );
   }

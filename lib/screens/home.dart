@@ -5,12 +5,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
-
-
+import 'package:to_do/models/task_model.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({
+    super.key,
+    required this.insertTask,
+    required this.tasksDB,
+  });
+
+  final Future<void> Function(Task task) insertTask;
+  final Future<List<Task>> Function() tasksDB;
 
   @override
   State<Home> createState() => _HomeWidgetState();
@@ -21,16 +26,9 @@ class _HomeWidgetState extends State<Home> {
 
   int counter = 1;
 
-  void handleChecked(bool? value, int index) {
-    setState(() => tasks[index]["isChecked"] = value);
-  }
-
- 
-   
-
-
-
-  
+  // void handleChecked(bool? value, int index) {
+  //   setState(() => tasks[index]["isChecked"] = value);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -46,25 +44,12 @@ class _HomeWidgetState extends State<Home> {
           CupertinoListSection(
               header: const Text('My Reminders'),
               children: <CupertinoListTile>[
-                for (int i = 0; i < tasks.length; i++)
+                for (var task in widget.tasksDB())
                   CupertinoListTile(
-                    title: Text(tasks[i]["task"]),
-                    subtitle: Text(tasks[i]["timeCreated"]),
-                    leading: CupertinoCheckbox(
-                      value: tasks[i]["isChecked"],
-                      onChanged: (newValue) => handleChecked(newValue, i),
-                    ),
-                    trailing: DeleteWidget(
-                      taskID: tasks[i]["id"],
-                      onDeleteTask: (int id) {
-                        setState(
-                          () {
-                            tasks.removeWhere((task) => task["id"] == id);
-                          },
-                        );
-                      },
-                    ),
-                  ),
+                    title: task["task"],
+                    subtitle: task["timeCreated"],
+                    trailing: const Icon(CupertinoIcons.delete),
+                  )
               ]),
           Align(
               alignment: Alignment.bottomCenter,
@@ -76,17 +61,12 @@ class _HomeWidgetState extends State<Home> {
                 child: TextInputWidget(
                   onAddTask: (String newTask) {
                     dynamic timeCreated = DateTime.now();
-                    Map<String, dynamic> map = {};
-                    map["id"] = counter;
-                    map["task"] = newTask;
-                    map["isChecked"] = false;
-                    map["timeCreated"] = timeCreated.toString();
-                    setState(
-                      () {
-                        (tasks.add(map));
-                        counter += 1;
-                      },
-                    );
+                    var taskToAdd = Task(
+                        id: counter,
+                        task: newTask,
+                        isChecked: false,
+                        timeCreated: timeCreated.toString());
+                    widget.insertTask(taskToAdd);
                   },
                 ),
               ))
