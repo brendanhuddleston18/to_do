@@ -22,21 +22,20 @@ class Home extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<Home> {
-  List<Map> tasks = [];
-
   int counter = 1;
 
-  Future taskFuture;
+  late Future<List<Task>> taskFuture;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-   taskFuture = _getTasks();
+    taskFuture = _getTasks();
   }
 
-  _getTasks() async {
-    return await widget.tasksDB();
+  Future<List<Task>> _getTasks() async {
+    var fetchedTasks = await widget.tasksDB();
+    return fetchedTasks;
+    // return await widget.tasksDB();
   }
 
   // void handleChecked(bool? value, int index) {
@@ -54,19 +53,23 @@ class _HomeWidgetState extends State<Home> {
       ),
       child: Stack(
         children: [
-          FutureBuilder<List<Task>>(future: taskFuture, builder: ((context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting){
-              return Center(child: CircularProgressIndicator());
-            } else {
-              var tasks = snapshot.data ?? [];
-              return CupertinoListSection(
-                header: const Text("My reminders"),
-                children: tasks.map((task) {
-                  return CupertinoListTile(title: Text(task.task), subtitle: Text(task.timeCreated));
-                }).toList(),
-              );
-            }
-          })),
+          FutureBuilder<List<Task>>(
+              future: taskFuture,
+              builder: ((context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  var tasks = snapshot.data ?? [];
+                  return CupertinoListSection(
+                    header: const Text("My reminders"),
+                    children: tasks.map((task) {
+                      return CupertinoListTile(
+                          title: Text(task.task),
+                          subtitle: Text(task.timeCreated));
+                    }).toList(),
+                  );
+                }
+              })),
           Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
@@ -83,6 +86,10 @@ class _HomeWidgetState extends State<Home> {
                         isChecked: false,
                         timeCreated: timeCreated.toString());
                     widget.insertTask(taskToAdd);
+                    setState(() {
+                      counter += 1;
+                      taskFuture = _getTasks();
+                    });
                   },
                 ),
               ))

@@ -12,6 +12,7 @@ void main() async {
   final database = openDatabase(
     join(await getDatabasesPath(), 'tasks_database.db'),
     onCreate: (db, version) {
+      print("creating db");
       return db.execute(
           'CREATE TABLE tasks(id INTEGER PRIMARY KEY, task TEXT, isChecked BOOLEAN, timeCreated TEXT)');
     },
@@ -33,7 +34,7 @@ void main() async {
 
     final List<Map<String, Object?>> taskMaps = await db.query('tasks');
 
-     return taskMaps.map((taskMap) {
+    return taskMaps.map((taskMap) {
       return Task(
         id: taskMap['id'] as int,
         task: taskMap['task'] as String,
@@ -43,7 +44,10 @@ void main() async {
     }).toList();
   }
 
-  runApp(MyApp(insertTask: insertTask, tasks: tasks,));
+  runApp(MyApp(
+    insertTask: insertTask,
+    tasks: tasks,
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -55,7 +59,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-      home: Home(insertTask: insertTask, tasksDB: tasks,),
+      home: Home(
+        insertTask: insertTask,
+        tasksDB: tasks,
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
