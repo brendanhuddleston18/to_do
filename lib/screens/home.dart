@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import "dart:developer";
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:to_do/models/task_model.dart';
@@ -37,7 +38,6 @@ class _HomeWidgetState extends State<Home> {
     return fetchedTasks;
     // return await widget.tasksDB();
   }
-
   // void handleChecked(bool? value, int index) {
   //   setState(() => tasks[index]["isChecked"] = value);
   // }
@@ -55,18 +55,21 @@ class _HomeWidgetState extends State<Home> {
         children: [
           FutureBuilder<List<Task>>(
               future: taskFuture,
-              builder: ((context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else {
-                  var tasks = snapshot.data ?? [];
+              builder: ((BuildContext context, AsyncSnapshot snapshot) {
+                var tasks = snapshot.data ?? [];
+                print("tasks $tasks");
+                if (snapshot.hasData) {
                   return CupertinoListSection(
                     header: const Text("My reminders"),
-                    children: tasks.map((task) {
+                    children: tasks.map<Widget>((Task task) {
                       return CupertinoListTile(
-                          title: Text(task.task),
+                          title: Text(task.taskText),
                           subtitle: Text(task.timeCreated));
                     }).toList(),
+                  );
+                } else {
+                  return const Center(
+                    child: Icon(CupertinoIcons.xmark),
                   );
                 }
               })),
@@ -79,13 +82,18 @@ class _HomeWidgetState extends State<Home> {
                 ),
                 child: TextInputWidget(
                   onAddTask: (String newTask) {
-                    dynamic timeCreated = DateTime.now();
-                    var taskToAdd = Task(
+                    String timeCreated = DateTime.now().toString();
+                    Task taskToAdd = Task(
                         id: counter,
-                        task: newTask,
-                        isChecked: false,
-                        timeCreated: timeCreated.toString());
-                    widget.insertTask(taskToAdd);
+                        taskText: newTask,
+                        // isChecked: false,
+                        timeCreated: timeCreated);
+                    try {
+                      widget.insertTask(taskToAdd);
+                      print("it worked");
+                    } catch (e) {
+                      print("didn't work: $e");
+                    }
                     setState(() {
                       counter += 1;
                       taskFuture = _getTasks();

@@ -12,18 +12,23 @@ void main() async {
   final database = openDatabase(
     join(await getDatabasesPath(), 'tasks_database.db'),
     onCreate: (db, version) {
-      print("creating db");
       return db.execute(
-          'CREATE TABLE tasks(id INTEGER PRIMARY KEY, task TEXT, isChecked BOOLEAN, timeCreated TEXT)');
+          'CREATE TABLE newTasks(id INTEGER PRIMARY KEY, task TEXT, timeCreated TEXT)');
     },
-    version: 1,
+    onUpgrade: (db, oldVersion, newVersion) {
+      if (newVersion == 2) {
+        db.execute(
+            'CREATE TABLE newTasks(id INTEGER PRIMARY KEY, task TEXT, timeCreated TEXT)');
+      }
+    },
+    version: 2,
   );
 
   Future<void> insertTask(Task task) async {
     final db = await database;
 
     await db.insert(
-      'tasks',
+      'newTasks',
       task.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -32,13 +37,13 @@ void main() async {
   Future<List<Task>> tasks() async {
     final db = await database;
 
-    final List<Map<String, Object?>> taskMaps = await db.query('tasks');
+    final List<Map<String, Object?>> taskMaps = await db.query('newTasks');
 
     return taskMaps.map((taskMap) {
       return Task(
         id: taskMap['id'] as int,
-        task: taskMap['task'] as String,
-        isChecked: taskMap['isChecked'] == 1,
+        taskText: taskMap['task'] as String,
+        // isChecked: taskMap['isChecked'] == 1,
         timeCreated: taskMap['timeCreated'] as String,
       );
     }).toList();
