@@ -1,25 +1,46 @@
 import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import "dart:developer";
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:to_do/models/task_model.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({
+    super.key,
+    required this.insertTask,
+    required this.tasksDB,
+  });
+
+  final Future<void> Function(Task task) insertTask;
+  final Future<List<Task>> Function() tasksDB;
 
   @override
   State<Home> createState() => _HomeWidgetState();
 }
 
 class _HomeWidgetState extends State<Home> {
-  List<Map> tasks = [];
-
   int counter = 1;
 
-  void handleChecked(bool? value, int index) {
-    setState(() => tasks[index]["isChecked"] = value);
+  late Future<List<Task>> taskFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    taskFuture = _getTasks();
   }
+
+  Future<List<Task>> _getTasks() async {
+    var fetchedTasks = await widget.tasksDB();
+    return fetchedTasks;
+    // return await widget.tasksDB();
+  }
+  // void handleChecked(bool? value, int index) {
+  //   setState(() => tasks[index]["isChecked"] = value);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -32,29 +53,25 @@ class _HomeWidgetState extends State<Home> {
       ),
       child: Stack(
         children: [
-          CupertinoListSection(
-              header: const Text('My Reminders'),
-              children: <CupertinoListTile>[
-                for (int i = 0; i < tasks.length; i++)
-                  CupertinoListTile(
-                    title: Text(tasks[i]["task"]),
-                    subtitle: Text(tasks[i]["timeCreated"]),
-                    leading: CupertinoCheckbox(
-                      value: tasks[i]["isChecked"],
-                      onChanged: (newValue) => handleChecked(newValue, i),
-                    ),
-                    trailing: DeleteWidget(
-                      taskID: tasks[i]["id"],
-                      onDeleteTask: (int id) {
-                        setState(
-                          () {
-                            tasks.removeWhere((task) => task["id"] == id);
-                          },
-                        );
-                      },
-                    ),
-                  ),
-              ]),
+          FutureBuilder<List<Task>>(
+              future: taskFuture,
+              builder: ((BuildContext context, AsyncSnapshot snapshot) {
+                var tasks = snapshot.data ?? [];
+                if (snapshot.hasData) {
+                  return CupertinoListSection(
+                    header: const Text("My reminders"),
+                    children: tasks.map<Widget>((Task task) {
+                      return CupertinoListTile(
+                          title: Text(task.taskText),
+                          subtitle: Text(task.timeCreated));
+                    }).toList(),
+                  );
+                } else {
+                  return const Center(
+                    child: Icon(CupertinoIcons.xmark),
+                  );
+                }
+              })),
           Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
@@ -64,18 +81,21 @@ class _HomeWidgetState extends State<Home> {
                 ),
                 child: TextInputWidget(
                   onAddTask: (String newTask) {
-                    dynamic timeCreated = DateTime.now();
-                    Map<String, dynamic> map = {};
-                    map["id"] = counter;
-                    map["task"] = newTask;
-                    map["isChecked"] = false;
-                    map["timeCreated"] = timeCreated.toString();
-                    setState(
-                      () {
-                        (tasks.add(map));
-                        counter += 1;
-                      },
-                    );
+                    String timeCreated = DateTime.now().toString();
+                    Task taskToAdd = Task(
+                        id: counter,
+                        taskText: newTask,
+                        // isChecked: false,
+                        timeCreated: timeCreated);
+                    try {
+                      widget.insertTask(taskToAdd);
+                    } catch (e) {
+                      print("didn't work: $e");
+                    }
+                    setState(() {
+                      counter += 1;
+                      taskFuture = _getTasks();
+                    });
                   },
                 ),
               ))
