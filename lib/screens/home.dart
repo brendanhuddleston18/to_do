@@ -26,7 +26,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<Home> {
-  int counter = 1;
   var uuid = Uuid();
 
   late Future<List<Task>> taskFuture;
@@ -105,7 +104,6 @@ class _HomeWidgetState extends State<Home> {
                       print("didn't work: $e");
                     }
                     setState(() {
-                      counter += 1;
                       taskFuture = _getTasks();
                     });
                   },
