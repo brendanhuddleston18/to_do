@@ -61,6 +61,7 @@ class _HomeWidgetState extends State<Home> {
                     header: const Text("My reminders"),
                     children: tasks.map<Widget>((Task task) {
                       return CupertinoListTile(
+                        leading: const CheckboxWidget(),
                         title: Text(task.taskText),
                         subtitle: Text(task.timeCreated),
                         trailing: DeleteWidget(
@@ -115,6 +116,32 @@ class _HomeWidgetState extends State<Home> {
   }
 }
 
+class CheckboxWidget extends StatefulWidget {
+  const CheckboxWidget({
+    super.key,
+  });
+
+  @override
+  State<CheckboxWidget> createState() => _CheckboxWidgetState();
+}
+
+class _CheckboxWidgetState extends State<CheckboxWidget> {
+  bool? checkedState = false;
+  void handleCheckedState(bool? value) {
+    setState(
+      () {
+        checkedState = value;
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoCheckbox(
+        value: checkedState, onChanged: handleCheckedState);
+  }
+}
+
 class TextInputWidget extends StatefulWidget {
   const TextInputWidget({super.key, required this.onAddTask});
 
@@ -164,19 +191,5 @@ class _DeleteWidgetState extends State<DeleteWidget> {
           .then((_) => widget.handleRefresh()),
       icon: const Icon(CupertinoIcons.delete),
     );
-  }
-}
-
-class Checkmark extends StatefulWidget {
-  const Checkmark({super.key});
-
-  @override
-  State<Checkmark> createState() => _CheckmarkState();
-}
-
-class _CheckmarkState extends State<Checkmark> {
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
   }
 }
