@@ -34,7 +34,17 @@ void main() async {
     );
   }
 
-  Future<List<Task>> tasks() async {
+  Future<void> deleteTask(int id) async {
+    final db = await database;
+
+    await db.delete(
+      'newTasks',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<List<Task>> getTasks() async {
     final db = await database;
 
     final List<Map<String, Object?>> taskMaps = await db.query('newTasks');
@@ -51,22 +61,29 @@ void main() async {
 
   runApp(MyApp(
     insertTask: insertTask,
-    tasks: tasks,
+    deleteTask: deleteTask,
+    getTasks: getTasks,
   ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.tasks, required this.insertTask});
+  const MyApp(
+      {super.key,
+      required this.getTasks,
+      required this.insertTask,
+      required this.deleteTask});
 
   final Future<void> Function(Task task) insertTask;
-  final Future<List<Task>> Function() tasks;
+  final Future<void> Function(int id) deleteTask;
+  final Future<List<Task>> Function() getTasks;
 
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
       home: Home(
         insertTask: insertTask,
-        tasksDB: tasks,
+        deleteTask: deleteTask,
+        tasksDB: getTasks,
       ),
       debugShowCheckedModeBanner: false,
     );

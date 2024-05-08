@@ -13,9 +13,11 @@ class Home extends StatefulWidget {
     super.key,
     required this.insertTask,
     required this.tasksDB,
+    required this.deleteTask,
   });
 
   final Future<void> Function(Task task) insertTask;
+  final Future<void> Function(int id) deleteTask;
   final Future<List<Task>> Function() tasksDB;
 
   @override
@@ -62,8 +64,20 @@ class _HomeWidgetState extends State<Home> {
                     header: const Text("My reminders"),
                     children: tasks.map<Widget>((Task task) {
                       return CupertinoListTile(
-                          title: Text(task.taskText),
-                          subtitle: Text(task.timeCreated));
+                        title: Text(task.taskText),
+                        subtitle: Text(task.timeCreated),
+                        trailing: DeleteWidget(
+                          onDeleteTask: widget.deleteTask,
+                          taskID: task.id,
+                          handleRefresh: () {
+                            setState(
+                              () {
+                                taskFuture = _getTasks();
+                              },
+                            );
+                          },
+                        ),
+                      );
                     }).toList(),
                   );
                 } else {
@@ -134,9 +148,11 @@ class DeleteWidget extends StatefulWidget {
     super.key,
     required this.onDeleteTask,
     required this.taskID,
+    required this.handleRefresh,
   });
 
-  final Function(int taskID) onDeleteTask;
+  final Future<void> Function(int id) onDeleteTask;
+  final Function() handleRefresh;
   final int taskID;
 
   @override
@@ -147,7 +163,9 @@ class _DeleteWidgetState extends State<DeleteWidget> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () => widget.onDeleteTask(widget.taskID),
+      onPressed: () => widget
+          .onDeleteTask(widget.taskID)
+          .then((_) => widget.handleRefresh()),
       icon: const Icon(CupertinoIcons.delete),
     );
   }
