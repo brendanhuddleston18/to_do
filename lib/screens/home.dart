@@ -38,11 +38,7 @@ class _HomeWidgetState extends State<Home> {
   Future<List<Task>> _getTasks() async {
     var fetchedTasks = await widget.tasksDB();
     return fetchedTasks;
-    // return await widget.tasksDB();
   }
-  // void handleChecked(bool? value, int index) {
-  //   setState(() => tasks[index]["isChecked"] = value);
-  // }
 
   @override
   Widget build(BuildContext context) {
