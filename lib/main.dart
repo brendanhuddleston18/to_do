@@ -13,32 +13,32 @@ void main() async {
     join(await getDatabasesPath(), 'tasks_database.db'),
     onCreate: (db, version) {
       return db.execute(
-          'CREATE TABLE newTasks(id INTEGER PRIMARY KEY, task TEXT, timeCreated TEXT)');
+          'CREATE TABLE newestTasks(id TEXT, task TEXT, timeCreated TEXT)');
     },
     onUpgrade: (db, oldVersion, newVersion) {
-      if (newVersion == 2) {
+      if (newVersion == 4) {
         db.execute(
-            'CREATE TABLE newTasks(id INTEGER PRIMARY KEY, task TEXT, timeCreated TEXT)');
+            'CREATE TABLE newestTasks(id TEXT, task TEXT, timeCreated TEXT)');
       }
     },
-    version: 2,
+    version: 4,
   );
 
   Future<void> insertTask(Task task) async {
     final db = await database;
 
     await db.insert(
-      'newTasks',
+      'newestTasks',
       task.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  Future<void> deleteTask(int id) async {
+  Future<void> deleteTask(String id) async {
     final db = await database;
 
     await db.delete(
-      'newTasks',
+      'newestTasks',
       where: 'id = ?',
       whereArgs: [id],
     );
@@ -47,11 +47,11 @@ void main() async {
   Future<List<Task>> getTasks() async {
     final db = await database;
 
-    final List<Map<String, Object?>> taskMaps = await db.query('newTasks');
+    final List<Map<String, Object?>> taskMaps = await db.query('newestTasks');
 
     return taskMaps.map((taskMap) {
       return Task(
-        id: taskMap['id'] as int,
+        id: taskMap['id'] as String,
         taskText: taskMap['task'] as String,
         // isChecked: taskMap['isChecked'] == 1,
         timeCreated: taskMap['timeCreated'] as String,
@@ -74,7 +74,7 @@ class MyApp extends StatelessWidget {
       required this.deleteTask});
 
   final Future<void> Function(Task task) insertTask;
-  final Future<void> Function(int id) deleteTask;
+  final Future<void> Function(String id) deleteTask;
   final Future<List<Task>> Function() getTasks;
 
   @override

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import "dart:developer";
 import 'package:path/path.dart';
+import 'package:uuid/uuid.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:to_do/models/task_model.dart';
 
@@ -17,7 +18,7 @@ class Home extends StatefulWidget {
   });
 
   final Future<void> Function(Task task) insertTask;
-  final Future<void> Function(int id) deleteTask;
+  final Future<void> Function(String id) deleteTask;
   final Future<List<Task>> Function() tasksDB;
 
   @override
@@ -26,6 +27,7 @@ class Home extends StatefulWidget {
 
 class _HomeWidgetState extends State<Home> {
   int counter = 1;
+  var uuid = Uuid();
 
   late Future<List<Task>> taskFuture;
 
@@ -93,7 +95,7 @@ class _HomeWidgetState extends State<Home> {
                   onAddTask: (String newTask) {
                     String timeCreated = DateTime.now().toString();
                     Task taskToAdd = Task(
-                        id: counter,
+                        id: uuid.v4(),
                         taskText: newTask,
                         // isChecked: false,
                         timeCreated: timeCreated);
@@ -147,9 +149,9 @@ class DeleteWidget extends StatefulWidget {
     required this.handleRefresh,
   });
 
-  final Future<void> Function(int id) onDeleteTask;
+  final Future<void> Function(String id) onDeleteTask;
   final Function() handleRefresh;
-  final int taskID;
+  final String taskID;
 
   @override
   State<DeleteWidget> createState() => _DeleteWidgetState();
