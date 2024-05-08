@@ -1,5 +1,5 @@
 class Task {
-  final int id;
+  final String id;
   final String taskText;
   // final bool isChecked;
   final String timeCreated;
