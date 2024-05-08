@@ -57,7 +57,6 @@ class _HomeWidgetState extends State<Home> {
               future: taskFuture,
               builder: ((BuildContext context, AsyncSnapshot snapshot) {
                 var tasks = snapshot.data ?? [];
-                print("tasks $tasks");
                 if (snapshot.hasData) {
                   return CupertinoListSection(
                     header: const Text("My reminders"),
@@ -90,7 +89,6 @@ class _HomeWidgetState extends State<Home> {
                         timeCreated: timeCreated);
                     try {
                       widget.insertTask(taskToAdd);
-                      print("it worked");
                     } catch (e) {
                       print("didn't work: $e");
                     }
