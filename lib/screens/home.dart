@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:to_do/models/task_model.dart';
 
 class Home extends StatefulWidget {
@@ -54,22 +55,26 @@ class _HomeWidgetState extends State<Home> {
                   return CupertinoListSection(
                     header: const Text("My reminders"),
                     children: tasks.map<Widget>((Task task) {
-                      return CupertinoListTile(
-                        leading: const CheckboxWidget(),
-                        title: Text(task.taskText),
-                        subtitle: Text(task.timeCreated),
-                        trailing: DeleteWidget(
-                          onDeleteTask: widget.deleteTask,
-                          taskID: task.id,
-                          handleRefresh: () {
-                            setState(
-                              () {
-                                taskFuture = _getTasks();
+                      return Animate(
+                          effects: const [
+                            SlideEffect(curve: Curves.easeInCubic)
+                          ],
+                          child: CupertinoListTile(
+                            leading: const CheckboxWidget(),
+                            title: Text(task.taskText),
+                            subtitle: Text(task.timeCreated),
+                            trailing: DeleteWidget(
+                              onDeleteTask: widget.deleteTask,
+                              taskID: task.id,
+                              handleRefresh: () {
+                                setState(
+                                  () {
+                                    taskFuture = _getTasks();
+                                  },
+                                );
                               },
-                            );
-                          },
-                        ),
-                      );
+                            ),
+                          ));
                     }).toList(),
                   );
                 } else {
