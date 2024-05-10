@@ -1,12 +1,6 @@
-import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import "dart:developer";
-import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:to_do/models/task_model.dart';
 
 class Home extends StatefulWidget {
@@ -26,7 +20,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<Home> {
-  var uuid = Uuid();
+  var uuid = const Uuid();
 
   late Future<List<Task>> taskFuture;
 
@@ -154,13 +148,18 @@ class TextInputWidget extends StatefulWidget {
 class _TextInputWidgetState extends State<TextInputWidget> {
   TextEditingController controller = TextEditingController();
 
+  handleTaskAndClear() {
+    widget.onAddTask(controller.text);
+    controller.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoTextField(
         controller: controller,
         placeholder: "Enter a task!",
         suffix: IconButton(
-          onPressed: () => widget.onAddTask(controller.text),
+          onPressed: () => handleTaskAndClear(),
           icon: const Icon(CupertinoIcons.paperplane),
         ));
   }

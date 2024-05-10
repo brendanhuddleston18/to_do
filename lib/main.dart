@@ -3,7 +3,6 @@ import 'package:to_do/screens/home.dart';
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:flutter/widgets.dart';
 import 'package:to_do/models/task_model.dart';
 
 void main() async {
