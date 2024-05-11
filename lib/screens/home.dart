@@ -55,26 +55,24 @@ class _HomeWidgetState extends State<Home> {
                   return CupertinoListSection(
                     header: const Text("My reminders"),
                     children: tasks.map<Widget>((Task task) {
-                      return Animate(
-                          effects: const [
-                            SlideEffect(curve: Curves.easeInCubic)
-                          ],
-                          child: CupertinoListTile(
-                            leading: const CheckboxWidget(),
-                            title: Text(task.taskText),
-                            subtitle: Text(task.timeCreated),
-                            trailing: DeleteWidget(
-                              onDeleteTask: widget.deleteTask,
-                              taskID: task.id,
-                              handleRefresh: () {
-                                setState(
-                                  () {
-                                    taskFuture = _getTasks();
-                                  },
-                                );
+                      return CupertinoListTile(
+                        leading: const CheckboxWidget(),
+                        title: Text(task.taskText),
+                        subtitle: Text(task.timeCreated),
+                        trailing: DeleteWidget(
+                          onDeleteTask: widget.deleteTask,
+                          taskID: task.id,
+                          handleRefresh: () {
+                            setState(
+                              () {
+                                taskFuture = _getTasks();
                               },
-                            ),
-                          ));
+                            );
+                          },
+                        ),
+                      )
+                          .animate(delay: const Duration(milliseconds: 50))
+                          .fadeIn();
                     }).toList(),
                   );
                 } else {
