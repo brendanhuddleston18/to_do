@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:to_do/models/task_model.dart';
@@ -62,6 +63,19 @@ class _HomeWidgetState extends State<Home> {
                             leading: const CheckboxWidget(),
                             title: Text(task.taskText),
                             subtitle: Text(task.timeCreated),
+                            additionalInfo: InformationDisplayWidget(
+                                information: task.taskText,
+                                showModal: (String info) {
+                                  showCupertinoModalPopup(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return CupertinoAlertDialog(
+                                          title: Text(info),
+                                          content: const Text(
+                                              "Task content will go here"),
+                                        );
+                                      });
+                                }),
                             trailing: DeleteWidget(
                               onDeleteTask: widget.deleteTask,
                               taskID: task.id,
@@ -193,6 +207,33 @@ class _DeleteWidgetState extends State<DeleteWidget> {
           .onDeleteTask(widget.taskID)
           .then((_) => widget.handleRefresh()),
       icon: const Icon(CupertinoIcons.delete),
+    );
+  }
+}
+
+class InformationDisplayWidget extends StatefulWidget {
+  const InformationDisplayWidget({
+    super.key,
+    required this.information,
+    required this.showModal,
+  });
+
+  final String information;
+  final Function(String) showModal;
+
+  @override
+  State<InformationDisplayWidget> createState() =>
+      _InformationDisplayWidgetState();
+}
+
+class _InformationDisplayWidgetState extends State<InformationDisplayWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(CupertinoIcons.info_circle),
+      onPressed: () {
+        widget.showModal(widget.information);
+      },
     );
   }
 }
