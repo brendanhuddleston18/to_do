@@ -1,9 +1,14 @@
+// --------External------------------//
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:to_do/models/task_model.dart';
+
+// --------My Widgets---------------//
+import 'package:to_do/widgets/checkbox_widget.dart';
+import 'package:to_do/widgets/delete_widget.dart';
+import 'package:to_do/widgets/information_display_widget.dart';
+import 'package:to_do/widgets/text_input_widget.dart';
 
 class Home extends StatefulWidget {
   const Home({
@@ -124,116 +129,6 @@ class _HomeWidgetState extends State<Home> {
               ))
         ],
       ),
-    );
-  }
-}
-
-class CheckboxWidget extends StatefulWidget {
-  const CheckboxWidget({
-    super.key,
-  });
-
-  @override
-  State<CheckboxWidget> createState() => _CheckboxWidgetState();
-}
-
-class _CheckboxWidgetState extends State<CheckboxWidget> {
-  bool? checkedState = false;
-  void handleCheckedState(bool? value) {
-    setState(
-      () {
-        checkedState = value;
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoCheckbox(
-        value: checkedState, onChanged: handleCheckedState);
-  }
-}
-
-class TextInputWidget extends StatefulWidget {
-  const TextInputWidget({super.key, required this.onAddTask});
-
-  final Function(String) onAddTask;
-
-  @override
-  State<TextInputWidget> createState() => _TextInputWidgetState();
-}
-
-class _TextInputWidgetState extends State<TextInputWidget> {
-  TextEditingController controller = TextEditingController();
-
-  handleTaskAndClear() {
-    widget.onAddTask(controller.text);
-    controller.clear();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoTextField(
-        controller: controller,
-        placeholder: "Enter a task!",
-        suffix: IconButton(
-          onPressed: () => handleTaskAndClear(),
-          icon: const Icon(CupertinoIcons.paperplane),
-        ));
-  }
-}
-
-class DeleteWidget extends StatefulWidget {
-  const DeleteWidget({
-    super.key,
-    required this.onDeleteTask,
-    required this.taskID,
-    required this.handleRefresh,
-  });
-
-  final Future<void> Function(String id) onDeleteTask;
-  final Function() handleRefresh;
-  final String taskID;
-
-  @override
-  State<DeleteWidget> createState() => _DeleteWidgetState();
-}
-
-class _DeleteWidgetState extends State<DeleteWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () => widget
-          .onDeleteTask(widget.taskID)
-          .then((_) => widget.handleRefresh()),
-      icon: const Icon(CupertinoIcons.delete),
-    );
-  }
-}
-
-class InformationDisplayWidget extends StatefulWidget {
-  const InformationDisplayWidget({
-    super.key,
-    required this.information,
-    required this.showModal,
-  });
-
-  final String information;
-  final Function(String) showModal;
-
-  @override
-  State<InformationDisplayWidget> createState() =>
-      _InformationDisplayWidgetState();
-}
-
-class _InformationDisplayWidgetState extends State<InformationDisplayWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(CupertinoIcons.info_circle),
-      onPressed: () {
-        widget.showModal(widget.information);
-      },
     );
   }
 }
