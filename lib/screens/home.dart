@@ -1,5 +1,6 @@
 // --------External------------------//
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:to_do/models/task_model.dart';
@@ -46,7 +47,7 @@ class _HomeWidgetState extends State<Home> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
-        backgroundColor: Color.fromRGBO(0, 127, 255, 1),
+        backgroundColor: Color.fromRGBO(229, 229, 234, 1),
         leading: Text("Panel"),
         middle: Text("Brendan's To Do List"),
         trailing: Text("Time"),
@@ -59,26 +60,28 @@ class _HomeWidgetState extends State<Home> {
                 var tasks = snapshot.data ?? [];
                 if (snapshot.hasData) {
                   return CupertinoListSection(
-                    header: const Text("My reminders"),
+                    header: const Text(
+                      "My Reminders:",
+                      selectionColor: Colors.blue,
+                    ),
+                    backgroundColor: const Color.fromRGBO(229, 229, 234, 1),
                     children: tasks.map<Widget>((Task task) {
                       return Animate(
                           effects: const [FlipEffect()],
                           child: CupertinoListTile(
                             key: ValueKey(task.id),
+                            backgroundColor:
+                                const Color.fromRGBO(239, 239, 244, 1),
                             leading: const CheckboxWidget(),
                             title: Text(task.taskText),
                             subtitle: Text(task.timeCreated),
-                            additionalInfo: InformationDisplayWidget(
+                            additionalInfo: InfoDisplayButtonWidget(
                                 information: task.taskText,
                                 showModal: (String info) {
                                   showCupertinoModalPopup(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return CupertinoAlertDialog(
-                                          title: Text(info),
-                                          content: const Text(
-                                              "Task content will go here"),
-                                        );
+                                        return InfoAlertDialog(text: info);
                                       });
                                 }),
                             trailing: DeleteWidget(
