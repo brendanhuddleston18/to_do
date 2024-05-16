@@ -49,6 +49,20 @@ class _InfoEditButtonState extends State<InfoEditButton> {
   }
 }
 
+class InfoStopEditButton extends StatefulWidget {
+  const InfoStopEditButton({super.key});
+
+  @override
+  State<InfoStopEditButton> createState() => _InfoStopEditButtonState();
+}
+
+class _InfoStopEditButtonState extends State<InfoStopEditButton> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
 class InfoTextBox extends StatefulWidget {
   const InfoTextBox({super.key, required this.taskInfo});
 
