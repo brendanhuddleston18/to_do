@@ -1,13 +1,13 @@
 class Task {
   final String id;
   final String taskText;
-  // final bool isChecked;
+  final String description;
   final String timeCreated;
 
    Task({
     required this.id,
     required this.taskText,
-    // required this.isChecked,
+    required this.description,
     required this.timeCreated,
   });
 
@@ -15,7 +15,7 @@ class Task {
     return {
       'id': id,
       'task': taskText,
-      // 'isChecked': isChecked,
+      'description': description,
       'timeCreated': timeCreated,
     };
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:to_do/models/task_model.dart';
 
 class InfoDisplayButtonWidget extends StatefulWidget {
   const InfoDisplayButtonWidget({
@@ -49,22 +50,25 @@ class _InfoEditButtonState extends State<InfoEditButton> {
   }
 }
 
-class InfoStopEditButton extends StatefulWidget {
-  const InfoStopEditButton({super.key});
+// class InfoStopEditButton extends StatefulWidget {
+//   const InfoStopEditButton({super.key});
 
-  @override
-  State<InfoStopEditButton> createState() => _InfoStopEditButtonState();
-}
+//   @override
+//   State<InfoStopEditButton> createState() => _InfoStopEditButtonState();
+// }
 
-class _InfoStopEditButtonState extends State<InfoStopEditButton> {
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
+// class _InfoStopEditButtonState extends State<InfoStopEditButton> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return const Placeholder();
+//   }
+// }
 
 class InfoTextBox extends StatefulWidget {
-  const InfoTextBox({super.key, required this.taskInfo});
+  const InfoTextBox({
+    super.key,
+    required this.taskInfo,
+  });
 
   final String taskInfo;
 
@@ -81,10 +85,14 @@ class _InfoTextBoxState extends State<InfoTextBox> {
 
 class InfoTextInput extends StatefulWidget {
   const InfoTextInput(
-      {super.key, required this.updateTaskInfo, required this.isEditing});
+      {super.key,
+      required this.updateTaskInfo,
+      required this.isEditing,
+      required this.handleRefresh});
 
   final Function(String) updateTaskInfo;
   final bool isEditing;
+  final Function() handleRefresh;
 
   @override
   State<InfoTextInput> createState() => _InfoTextInputState();
@@ -101,7 +109,9 @@ class _InfoTextInputState extends State<InfoTextInput> {
           suffix: IconButton(
             icon: const Icon(CupertinoIcons.plus),
             onPressed: () {
-              widget.updateTaskInfo(controller.text);
+              widget
+                  .updateTaskInfo(controller.text)
+                  .then((_) => widget.handleRefresh());
             },
           ));
     } else {
@@ -111,9 +121,15 @@ class _InfoTextInputState extends State<InfoTextInput> {
 }
 
 class InfoAlertDialog extends StatefulWidget {
-  const InfoAlertDialog({super.key, required this.text});
+  const InfoAlertDialog(
+      {super.key,
+      required this.taskData,
+      required this.updateTask,
+      required this.handleRefresh});
 
-  final String text;
+  final Task taskData;
+  final Future<void> Function(Task task) updateTask;
+  final Function() handleRefresh;
 
   @override
   State<InfoAlertDialog> createState() => _InfoAlertDialogState();
@@ -126,7 +142,7 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-      title: Text(widget.text),
+      title: Text(widget.taskData.taskText),
       content: Column(children: [
         Padding(
             padding: const EdgeInsets.only(left: 140),
@@ -137,12 +153,19 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
             )),
         Padding(
             padding: const EdgeInsets.only(bottom: 40),
-            child: InfoTextBox(taskInfo: taskInfo)),
+            child: InfoTextBox(taskInfo: widget.taskData.description)),
         Align(
           alignment: Alignment.bottomCenter,
           child: InfoTextInput(
+            handleRefresh: widget.handleRefresh,
             updateTaskInfo: (String updatedInfo) {
               setState(() => taskInfo = updatedInfo);
+              Task updatedTask = Task(
+                  description: taskInfo,
+                  id: widget.taskData.id,
+                  taskText: widget.taskData.taskText,
+                  timeCreated: widget.taskData.timeCreated);
+              widget.updateTask(updatedTask);
             },
             isEditing: isEditing,
           ),

@@ -17,10 +17,12 @@ class Home extends StatefulWidget {
     required this.insertTask,
     required this.tasksDB,
     required this.deleteTask,
+    required this.updateTask,
   });
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
+  final Future<void> Function(Task task) updateTask;
   final Future<List<Task>> Function() tasksDB;
 
   @override
@@ -81,7 +83,17 @@ class _HomeWidgetState extends State<Home> {
                                   showCupertinoModalPopup(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return InfoAlertDialog(text: info);
+                                        return InfoAlertDialog(
+                                          taskData: task,
+                                          updateTask: widget.updateTask,
+                                          handleRefresh: () {
+                                            setState(
+                                              (){
+                                                taskFuture = _getTasks();
+                                              }
+                                            );
+                                          },
+                                        );
                                       });
                                 }),
                             trailing: DeleteWidget(
@@ -117,7 +129,7 @@ class _HomeWidgetState extends State<Home> {
                     Task taskToAdd = Task(
                         id: uuid.v4(),
                         taskText: newTask,
-                        // isChecked: false,
+                        description: '',
                         timeCreated: timeCreated);
                     try {
                       widget.insertTask(taskToAdd);
