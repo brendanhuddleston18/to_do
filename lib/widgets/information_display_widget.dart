@@ -43,7 +43,7 @@ class _InfoEditButtonState extends State<InfoEditButton> {
     return IconButton(
       icon: const Icon(CupertinoIcons.pencil_circle),
       onPressed: () {
-        widget.isEditing;
+        widget.isEditing();
       },
     );
   }
@@ -91,7 +91,7 @@ class _InfoTextInputState extends State<InfoTextInput> {
             },
           ));
     } else {
-      return const Text("Text input will go here if user is editing");
+      return const Text("");
     }
   }
 }
