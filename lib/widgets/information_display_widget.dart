@@ -84,15 +84,14 @@ class _InfoTextBoxState extends State<InfoTextBox> {
 }
 
 class InfoTextInput extends StatefulWidget {
-  const InfoTextInput(
-      {super.key,
-      required this.updateTaskInfo,
-      required this.isEditing,
-      required this.handleRefresh});
+  const InfoTextInput({
+    super.key,
+    required this.updateTaskInfo,
+    required this.isEditing,
+  });
 
   final Function(String) updateTaskInfo;
   final bool isEditing;
-  final Function() handleRefresh;
 
   @override
   State<InfoTextInput> createState() => _InfoTextInputState();
@@ -109,9 +108,7 @@ class _InfoTextInputState extends State<InfoTextInput> {
           suffix: IconButton(
             icon: const Icon(CupertinoIcons.plus),
             onPressed: () {
-              widget
-                  .updateTaskInfo(controller.text)
-                  .then((_) => widget.handleRefresh());
+              widget.updateTaskInfo(controller.text);
             },
           ));
     } else {
@@ -121,15 +118,14 @@ class _InfoTextInputState extends State<InfoTextInput> {
 }
 
 class InfoAlertDialog extends StatefulWidget {
-  const InfoAlertDialog(
-      {super.key,
-      required this.taskData,
-      required this.updateTask,
-      required this.handleRefresh});
+  const InfoAlertDialog({
+    super.key,
+    required this.taskData,
+    required this.updateTask,
+  });
 
   final Task taskData;
   final Future<void> Function(Task task) updateTask;
-  final Function() handleRefresh;
 
   @override
   State<InfoAlertDialog> createState() => _InfoAlertDialogState();
@@ -157,7 +153,6 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
         Align(
           alignment: Alignment.bottomCenter,
           child: InfoTextInput(
-            handleRefresh: widget.handleRefresh,
             updateTaskInfo: (String updatedInfo) {
               setState(() => taskInfo = updatedInfo);
               Task updatedTask = Task(

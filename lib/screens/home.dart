@@ -69,7 +69,7 @@ class _HomeWidgetState extends State<Home> {
                     backgroundColor: const Color.fromRGBO(229, 229, 234, 1),
                     children: tasks.map<Widget>((Task task) {
                       return Animate(
-                          effects: const [FlipEffect()],
+                          effects: const [],
                           child: CupertinoListTile(
                             key: ValueKey(task.id),
                             backgroundColor:
@@ -86,13 +86,6 @@ class _HomeWidgetState extends State<Home> {
                                         return InfoAlertDialog(
                                           taskData: task,
                                           updateTask: widget.updateTask,
-                                          handleRefresh: () {
-                                            setState(
-                                              (){
-                                                taskFuture = _getTasks();
-                                              }
-                                            );
-                                          },
                                         );
                                       });
                                 }),
