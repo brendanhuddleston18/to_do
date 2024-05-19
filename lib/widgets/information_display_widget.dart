@@ -50,44 +50,19 @@ class _InfoEditButtonState extends State<InfoEditButton> {
   }
 }
 
-class InfoTextBox extends StatefulWidget {
-  const InfoTextBox({super.key, required this.taskInfo});
+class InfoTextBox extends StatelessWidget {
+  const InfoTextBox({
+    super.key,
+    required this.taskInfo,
+  });
 
   final String taskInfo;
 
   @override
-  State<InfoTextBox> createState() => _InfoTextBoxState();
-}
-
-class _InfoTextBoxState extends State<InfoTextBox> {
-  late String updatedInfo;
-
-  Widget handleUpdatedTaskinfo() {
-    setState(() {
-      updatedInfo = widget.taskInfo;
-    });
-    return Text(updatedInfo);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return handleUpdatedTaskinfo();
+    return Text(taskInfo);
   }
 }
-
-// class InfoTextBox extends StatelessWidget {
-//   const InfoTextBox({
-//     super.key,
-//     required this.taskInfo,
-//   });
-
-//   final String taskInfo;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Text(taskInfo);
-//   }
-// }
 
 class InfoTextInput extends StatefulWidget {
   const InfoTextInput({
