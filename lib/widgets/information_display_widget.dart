@@ -50,25 +50,8 @@ class _InfoEditButtonState extends State<InfoEditButton> {
   }
 }
 
-// class InfoStopEditButton extends StatefulWidget {
-//   const InfoStopEditButton({super.key});
-
-//   @override
-//   State<InfoStopEditButton> createState() => _InfoStopEditButtonState();
-// }
-
-// class _InfoStopEditButtonState extends State<InfoStopEditButton> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Placeholder();
-//   }
-// }
-
 class InfoTextBox extends StatefulWidget {
-  const InfoTextBox({
-    super.key,
-    required this.taskInfo,
-  });
+  const InfoTextBox({super.key, required this.taskInfo});
 
   final String taskInfo;
 
@@ -77,11 +60,34 @@ class InfoTextBox extends StatefulWidget {
 }
 
 class _InfoTextBoxState extends State<InfoTextBox> {
+  late String updatedInfo;
+
+  Widget handleUpdatedTaskinfo() {
+    setState(() {
+      updatedInfo = widget.taskInfo;
+    });
+    return Text(updatedInfo);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Text(widget.taskInfo);
+    return handleUpdatedTaskinfo();
   }
 }
+
+// class InfoTextBox extends StatelessWidget {
+//   const InfoTextBox({
+//     super.key,
+//     required this.taskInfo,
+//   });
+
+//   final String taskInfo;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Text(taskInfo);
+//   }
+// }
 
 class InfoTextInput extends StatefulWidget {
   const InfoTextInput({
@@ -133,7 +139,26 @@ class InfoAlertDialog extends StatefulWidget {
 
 class _InfoAlertDialogState extends State<InfoAlertDialog> {
   bool isEditing = false;
-  String taskInfo = "";
+  late String taskInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    taskInfo = widget.taskData.description;
+  }
+
+  void handleUpdateTaskInfo(String updatedInfo) {
+    setState(() {
+      taskInfo = updatedInfo;
+      isEditing = false;
+    });
+    Task updatedTask = Task(
+        description: taskInfo,
+        id: widget.taskData.id,
+        taskText: widget.taskData.taskText,
+        timeCreated: widget.taskData.timeCreated);
+    widget.updateTask(updatedTask);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,19 +174,11 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
             )),
         Padding(
             padding: const EdgeInsets.only(bottom: 40),
-            child: InfoTextBox(taskInfo: widget.taskData.description)),
+            child: InfoTextBox(taskInfo: taskInfo)),
         Align(
           alignment: Alignment.bottomCenter,
           child: InfoTextInput(
-            updateTaskInfo: (String updatedInfo) {
-              setState(() => taskInfo = updatedInfo);
-              Task updatedTask = Task(
-                  description: taskInfo,
-                  id: widget.taskData.id,
-                  taskText: widget.taskData.taskText,
-                  timeCreated: widget.taskData.timeCreated);
-              widget.updateTask(updatedTask);
-            },
+            updateTaskInfo: handleUpdateTaskInfo,
             isEditing: isEditing,
           ),
         )
