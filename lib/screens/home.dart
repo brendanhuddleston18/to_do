@@ -81,11 +81,24 @@ class _HomeWidgetState extends State<Home> {
                                 information: task.taskText,
                                 showModal: (String info) {
                                   showCupertinoModalPopup(
+                                      barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return InfoAlertDialog(
-                                          taskData: task,
-                                          updateTask: widget.updateTask,
+                                        return Stack(
+                                          children: [
+                                            InfoAlertDialog(
+                                              taskData: task,
+                                              updateTask: widget.updateTask,
+                                            ),
+                                            Positioned(
+                                                right: 60,
+                                                top: 350,
+                                                child: ExitButton(
+                                                  onCloseModal: () {
+                                                    setState(() {});
+                                                  },
+                                                ))
+                                          ],
                                         );
                                       });
                                 }),

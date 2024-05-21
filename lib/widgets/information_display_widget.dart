@@ -161,3 +161,25 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
     );
   }
 }
+
+class ExitButton extends StatefulWidget {
+  const ExitButton({super.key, required this.onCloseModal});
+
+  final Function() onCloseModal;
+
+  @override
+  State<ExitButton> createState() => _ExitButtonState();
+}
+
+class _ExitButtonState extends State<ExitButton> {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(CupertinoIcons.xmark_circle_fill),
+      onPressed: () {
+        widget.onCloseModal;
+        Navigator.pop(context);
+      },
+    );
+  }
+}
