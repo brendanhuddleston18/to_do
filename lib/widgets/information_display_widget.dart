@@ -50,19 +50,34 @@ class _InfoEditButtonState extends State<InfoEditButton> {
   }
 }
 
-class InfoTextBox extends StatelessWidget {
-  const InfoTextBox({
-    super.key,
-    required this.taskInfo,
-  });
+class InfoTextBox extends StatefulWidget {
+  const InfoTextBox({super.key, required this.taskInfo});
 
   final String taskInfo;
 
   @override
+  State<InfoTextBox> createState() => _InfoTextBoxState();
+}
+
+class _InfoTextBoxState extends State<InfoTextBox> {
+  @override
   Widget build(BuildContext context) {
-    return Text(taskInfo);
+    return Text(widget.taskInfo);
   }
 }
+// class InfoTextBox extends StatelessWidget {
+//   const InfoTextBox({
+//     super.key,
+//     required this.taskInfo,
+//   });
+
+//   final String taskInfo;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Text(taskInfo);
+//   }
+// }
 
 class InfoTextInput extends StatefulWidget {
   const InfoTextInput({
@@ -163,7 +178,10 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
 }
 
 class ExitButton extends StatefulWidget {
-  const ExitButton({super.key, required this.onCloseModal});
+  const ExitButton({
+    super.key,
+    required this.onCloseModal,
+  });
 
   final Function() onCloseModal;
 

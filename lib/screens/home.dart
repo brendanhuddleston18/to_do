@@ -3,13 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:to_do/models/task_model.dart';
 
 // --------My Widgets---------------//
 import 'package:to_do/widgets/checkbox_widget.dart';
 import 'package:to_do/widgets/delete_widget.dart';
 import 'package:to_do/widgets/information_display_widget.dart';
 import 'package:to_do/widgets/text_input_widget.dart';
+import 'package:to_do/models/task_model.dart';
 
 class Home extends StatefulWidget {
   const Home({
