@@ -95,7 +95,9 @@ class _HomeWidgetState extends State<Home> {
                                                 top: 350,
                                                 child: ExitButton(
                                                   onCloseModal: () {
-                                                    setState(() {});
+                                                    setState(() {
+                                                      taskFuture = _getTasks();
+                                                    });
                                                   },
                                                 ))
                                           ],

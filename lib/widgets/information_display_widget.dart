@@ -29,6 +29,8 @@ class _InformationDisplayButtonState extends State<InfoDisplayButtonWidget> {
   }
 }
 
+// ---------------------------------------------------- //
+
 class InfoEditButton extends StatefulWidget {
   const InfoEditButton({super.key, required this.isEditing});
 
@@ -49,6 +51,8 @@ class _InfoEditButtonState extends State<InfoEditButton> {
     );
   }
 }
+
+// ---------------------------------------------------- //
 
 class InfoTextBox extends StatefulWidget {
   const InfoTextBox({super.key, required this.taskInfo});
@@ -78,6 +82,8 @@ class _InfoTextBoxState extends State<InfoTextBox> {
 //     return Text(taskInfo);
 //   }
 // }
+
+// ---------------------------------------------------- //
 
 class InfoTextInput extends StatefulWidget {
   const InfoTextInput({
@@ -112,6 +118,8 @@ class _InfoTextInputState extends State<InfoTextInput> {
     }
   }
 }
+
+// ---------------------------------------------------- //
 
 class InfoAlertDialog extends StatefulWidget {
   const InfoAlertDialog({
@@ -177,6 +185,8 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
   }
 }
 
+// ---------------------------------------------------- //
+
 class ExitButton extends StatefulWidget {
   const ExitButton({
     super.key,
@@ -195,7 +205,7 @@ class _ExitButtonState extends State<ExitButton> {
     return IconButton(
       icon: const Icon(CupertinoIcons.xmark_circle_fill),
       onPressed: () {
-        widget.onCloseModal;
+        widget.onCloseModal();
         Navigator.pop(context);
       },
     );
