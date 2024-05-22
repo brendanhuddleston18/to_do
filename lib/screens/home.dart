@@ -10,6 +10,7 @@ import 'package:to_do/widgets/delete_widget.dart';
 import 'package:to_do/widgets/information_display_widget.dart';
 import 'package:to_do/widgets/text_input_widget.dart';
 import 'package:to_do/models/task_model.dart';
+import 'package:to_do/widgets/pull_down_widget.dart';
 
 class Home extends StatefulWidget {
   const Home({
@@ -48,11 +49,20 @@ class _HomeWidgetState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        backgroundColor: Color.fromRGBO(229, 229, 234, 1),
-        leading: Text("Panel"),
-        middle: Text("Brendan's To Do List"),
-        trailing: Text("Time"),
+      navigationBar: CupertinoNavigationBar(
+        backgroundColor: const Color.fromRGBO(229, 229, 234, 1),
+        leading: const Text(
+          "Blah",
+        ),
+        middle: const Text("Brendan's To Do List"),
+        trailing: PullDownMenu(builder: (_, showMenu) {
+          return CupertinoButton(
+            onPressed: showMenu,
+            padding: EdgeInsets.zero,
+            pressedOpacity: 1,
+            child: const Icon(CupertinoIcons.ellipsis),
+          );
+        }),
       ),
       child: Stack(
         children: [
