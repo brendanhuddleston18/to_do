@@ -48,14 +48,21 @@ class PullDownMenu extends StatelessWidget {
               PullDownMenuItem(
                 onTap: () {},
                 title: "Delete all Tasks",
-                icon: CupertinoIcons.trash_circle_fill,
+                icon: CupertinoIcons.trash,
               )
             ]),
             const PullDownMenuDivider.large(),
-            PullDownMenuItem(onTap: () {}, title: "Settings"),
-            PullDownMenuItem(onTap: () {}, title: "About"),
+            PullDownMenuItem(
+                onTap: () {}, title: "Settings", icon: CupertinoIcons.gear),
+            PullDownMenuItem(
+                onTap: () {}, title: "About", icon: CupertinoIcons.book),
             const PullDownMenuDivider.large(),
-            PullDownMenuItem(onTap: () {}, title: "Log out")
+            PullDownMenuItem(
+              onTap: () {},
+              title: "Sign out",
+              icon: CupertinoIcons.device_phone_portrait,
+              isDestructive: true,
+            )
           ];
         },
         buttonBuilder: builder);
