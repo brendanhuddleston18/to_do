@@ -26,11 +26,46 @@ class PullDownMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PullDownButton(itemBuilder: (context){
-      return [PullDownMenuHeader(leading: ColoredBox(
-              color: CupertinoColors.systemBlue.resolveFrom(context),
-            ), title: "Profile")];
-    }, buttonBuilder: builder);
+    return PullDownButton(
+        itemBuilder: (context) {
+          return [
+            PullDownMenuHeader(
+              leading: ColoredBox(
+                color: CupertinoColors.systemBlue.resolveFrom(context),
+              ),
+              title: "Profile",
+              subtitle: "Tap to open",
+              onTap: () {},
+              icon: CupertinoIcons.profile_circled,
+            ),
+            const PullDownMenuDivider.large(),
+            PullDownMenuActionsRow.medium(items: [
+              PullDownMenuItem(
+                onTap: () {},
+                title: "Mark all as done",
+                icon: CupertinoIcons.check_mark,
+              ),
+              PullDownMenuItem(
+                onTap: () {},
+                title: "Delete all Tasks",
+                icon: CupertinoIcons.trash,
+              )
+            ]),
+            const PullDownMenuDivider.large(),
+            PullDownMenuItem(
+                onTap: () {}, title: "Settings", icon: CupertinoIcons.gear),
+            PullDownMenuItem(
+                onTap: () {}, title: "About", icon: CupertinoIcons.book),
+            const PullDownMenuDivider.large(),
+            PullDownMenuItem(
+              onTap: () {},
+              title: "Sign out",
+              icon: CupertinoIcons.device_phone_portrait,
+              isDestructive: true,
+            )
+          ];
+        },
+        buttonBuilder: builder);
   }
 }
 
