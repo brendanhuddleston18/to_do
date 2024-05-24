@@ -53,7 +53,11 @@ class PullDownMenu extends StatelessWidget {
             ]),
             const PullDownMenuDivider.large(),
             PullDownMenuItem(
-                onTap: () {}, title: "Settings", icon: CupertinoIcons.gear),
+                onTap: () {
+                  Navigator.pushNamed(context, '/settings');
+                },
+                title: "Settings",
+                icon: CupertinoIcons.gear),
             PullDownMenuItem(
                 onTap: () {}, title: "About", icon: CupertinoIcons.book),
             const PullDownMenuDivider.large(),

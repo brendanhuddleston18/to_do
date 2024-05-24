@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:to_do/widgets/darkmode_widget.dart';
 
 class SettingsWidget extends StatefulWidget {
   const SettingsWidget({super.key});
@@ -8,8 +10,25 @@ class SettingsWidget extends StatefulWidget {
 }
 
 class _SettingsWidgetState extends State<SettingsWidget> {
+  Color tileColor = const Color.fromRGBO(239, 239, 244, 1);
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          backgroundColor: const Color.fromRGBO(229, 229, 234, 1),
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(CupertinoIcons.chevron_back)),
+          middle: const Text("Settings"),
+        ),
+        child: CupertinoListSection(
+          margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+          backgroundColor: const Color.fromRGBO(229, 229, 234, 1),
+          children: [
+            DarkModeWidget(color: tileColor),
+          ],
+        ));
   }
 }

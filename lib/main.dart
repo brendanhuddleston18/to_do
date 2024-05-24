@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:to_do/models/task_model.dart';
+import 'package:to_do/screens/settings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -89,6 +90,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
+      initialRoute: '/',
+      routes: {
+        '/settings': (context) => const SettingsWidget(),
+      },
       home: Home(
         insertTask: insertTask,
         deleteTask: deleteTask,
