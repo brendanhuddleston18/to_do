@@ -14,6 +14,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
+          backgroundColor: const Color.fromRGBO(229, 229, 234, 1),
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
