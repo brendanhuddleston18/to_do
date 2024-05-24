@@ -101,6 +101,7 @@ class MyApp extends StatelessWidget {
         tasksDB: getTasks,
       ),
       debugShowCheckedModeBanner: false,
+      theme: const CupertinoThemeData(brightness: Brightness.light),
     );
   }
 }

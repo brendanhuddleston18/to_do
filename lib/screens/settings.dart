@@ -10,12 +10,10 @@ class SettingsWidget extends StatefulWidget {
 }
 
 class _SettingsWidgetState extends State<SettingsWidget> {
-  Color tileColor = const Color.fromRGBO(239, 239, 244, 1);
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          backgroundColor: const Color.fromRGBO(229, 229, 234, 1),
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -25,9 +23,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         ),
         child: CupertinoListSection(
           margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-          backgroundColor: const Color.fromRGBO(229, 229, 234, 1),
-          children: [
-            DarkModeWidget(color: tileColor),
+          children: const [
+            DarkModeWidget(),
           ],
         ));
   }
