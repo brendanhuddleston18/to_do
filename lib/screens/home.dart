@@ -19,11 +19,13 @@ class Home extends StatefulWidget {
     required this.tasksDB,
     required this.deleteTask,
     required this.updateTask,
+    required this.handleDarkMode,
   });
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
   final Future<void> Function(Task task) updateTask;
+  final void Function(bool isOn) handleDarkMode;
   final Future<List<Task>> Function() tasksDB;
 
   @override
@@ -50,7 +52,7 @@ class _HomeWidgetState extends State<Home> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        backgroundColor: const Color.fromRGBO(229, 229, 234, 1),
+        backgroundColor: Theme.of(context).colorScheme.background,
         leading: const Text(
           "Blah",
         ),
@@ -72,6 +74,7 @@ class _HomeWidgetState extends State<Home> {
                 var tasks = snapshot.data ?? [];
                 if (snapshot.hasData) {
                   return CupertinoListSection(
+                    backgroundColor: Theme.of(context).colorScheme.background,
                     header: const Text(
                       "My Reminders:",
                       selectionColor: Colors.blue,

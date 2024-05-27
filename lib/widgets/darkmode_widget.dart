@@ -3,7 +3,10 @@ import 'package:flutter/cupertino.dart';
 class DarkModeWidget extends StatefulWidget {
   const DarkModeWidget({
     super.key,
+    required this.handleDarkMode,
   });
+
+  final void Function(bool isOn) handleDarkMode;
 
   @override
   State<DarkModeWidget> createState() => _DarkModeWidgetState();
@@ -16,6 +19,7 @@ class _DarkModeWidgetState extends State<DarkModeWidget> {
     setState(
       () {
         isDark = value;
+        widget.handleDarkMode(isDark);
       },
     );
   }

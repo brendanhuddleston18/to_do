@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:to_do/widgets/darkmode_widget.dart';
 
 class SettingsWidget extends StatefulWidget {
-  const SettingsWidget({super.key});
+  const SettingsWidget({super.key, required this.handleDarkMode});
+
+  final void Function(bool isOn) handleDarkMode;
 
   @override
   State<SettingsWidget> createState() => _SettingsWidgetState();
@@ -14,7 +16,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          backgroundColor: const Color.fromRGBO(229, 229, 234, 1),
+          backgroundColor: Theme.of(context).colorScheme.background,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -23,9 +25,12 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           middle: const Text("Settings"),
         ),
         child: CupertinoListSection(
+          backgroundColor: Theme.of(context).colorScheme.background,
           margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-          children: const [
-            DarkModeWidget(),
+          children: [
+            DarkModeWidget(
+              handleDarkMode: widget.handleDarkMode,
+            ),
           ],
         ));
   }
