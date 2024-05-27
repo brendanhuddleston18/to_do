@@ -76,14 +76,11 @@ class _HomeWidgetState extends State<Home> {
                       "My Reminders:",
                       selectionColor: Colors.blue,
                     ),
-                    backgroundColor: const Color.fromRGBO(229, 229, 234, 1),
                     children: tasks.map<Widget>((Task task) {
                       return Animate(
                           effects: const [],
                           child: CupertinoListTile(
                             key: ValueKey(task.id),
-                            backgroundColor:
-                                const Color.fromRGBO(239, 239, 244, 1),
                             leading: const CheckboxWidget(),
                             title: Text(task.taskText),
                             subtitle: Text(task.timeCreated),
