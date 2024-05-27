@@ -120,10 +120,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       initialRoute: '/',
       routes: {
         '/settings': (context) => SettingsWidget(
+            currentTheme: currentTheme,
               handleDarkMode: handleDarkMode,
             ),
       },
       home: Home(
+        currentTheme: currentTheme,
         insertTask: widget.insertTask,
         deleteTask: widget.deleteTask,
         updateTask: widget.updateTask,
