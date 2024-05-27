@@ -74,7 +74,7 @@ void main() async {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp(
       {super.key,
       required this.getTasks,
@@ -88,6 +88,19 @@ class MyApp extends StatelessWidget {
   final Future<List<Task>> Function() getTasks;
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return CupertinoApp(
       initialRoute: '/',
@@ -95,10 +108,10 @@ class MyApp extends StatelessWidget {
         '/settings': (context) => const SettingsWidget(),
       },
       home: Home(
-        insertTask: insertTask,
-        deleteTask: deleteTask,
-        updateTask: updateTask,
-        tasksDB: getTasks,
+        insertTask: widget.insertTask,
+        deleteTask: widget.deleteTask,
+        updateTask: widget.updateTask,
+        tasksDB: widget.getTasks,
       ),
       debugShowCheckedModeBanner: false,
       theme: const CupertinoThemeData(brightness: Brightness.light),

@@ -10,12 +10,12 @@ class DarkModeWidget extends StatefulWidget {
 }
 
 class _DarkModeWidgetState extends State<DarkModeWidget> {
-  bool switchState = false;
+  bool isDark = false;
 
   void handleSwitch(bool value) {
     setState(
       () {
-        switchState = value;
+        isDark = value;
       },
     );
   }
@@ -26,7 +26,7 @@ class _DarkModeWidgetState extends State<DarkModeWidget> {
       leading: const Icon(CupertinoIcons.moon),
       title: const Text("Dark mode"),
       trailing: CupertinoSwitch(
-        value: switchState,
+        value: isDark,
         onChanged: handleSwitch,
       ),
     );
