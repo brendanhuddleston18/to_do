@@ -4,10 +4,14 @@ import 'package:to_do/widgets/darkmode_widget.dart';
 
 class SettingsWidget extends StatefulWidget {
   const SettingsWidget(
-      {super.key, required this.handleDarkMode, required this.currentTheme});
+      {super.key,
+      required this.handleDarkMode,
+      required this.currentTheme,
+      required this.handleDarkSwitch});
 
   final void Function(bool isOn) handleDarkMode;
   final CupertinoThemeData currentTheme;
+  final bool Function() handleDarkSwitch;
 
   @override
   State<SettingsWidget> createState() => _SettingsWidgetState();
@@ -31,6 +35,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
           children: [
             DarkModeWidget(
+              handleDarkSwitch: widget.handleDarkSwitch,
               handleDarkMode: widget.handleDarkMode,
             ),
           ],

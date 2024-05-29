@@ -114,6 +114,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
   }
 
+  bool handleDarkSwitch() {
+    if (currentTheme == darkTheme){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
@@ -122,6 +130,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         '/settings': (context) => SettingsWidget(
             currentTheme: currentTheme,
               handleDarkMode: handleDarkMode,
+              handleDarkSwitch: handleDarkSwitch,
             ),
       },
       home: Home(
