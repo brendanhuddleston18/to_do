@@ -5,6 +5,8 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:to_do/models/task_model.dart';
 import 'package:to_do/screens/settings.dart';
+import 'package:to_do/themes/dark_theme.dart';
+import 'package:to_do/themes/light_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -91,7 +93,8 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  CupertinoThemeData currentTheme = lightTheme;
 
   @override
   void initState() {
@@ -99,22 +102,47 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     super.initState();
   }
 
+  void handleDarkMode(bool isOn) {
+    if (isOn) {
+      setState(() {
+        currentTheme = darkTheme;
+      });
+    } else {
+      setState(() {
+        currentTheme = lightTheme;
+      });
+    }
+  }
+
+  bool handleDarkSwitch() {
+    if (currentTheme == darkTheme){
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
       initialRoute: '/',
       routes: {
-        '/settings': (context) => const SettingsWidget(),
+        '/settings': (context) => SettingsWidget(
+            currentTheme: currentTheme,
+              handleDarkMode: handleDarkMode,
+              handleDarkSwitch: handleDarkSwitch,
+            ),
       },
       home: Home(
+        currentTheme: currentTheme,
         insertTask: widget.insertTask,
         deleteTask: widget.deleteTask,
         updateTask: widget.updateTask,
+        handleDarkMode: handleDarkMode,
         tasksDB: widget.getTasks,
       ),
       debugShowCheckedModeBanner: false,
-      theme: const CupertinoThemeData(brightness: Brightness.light),
+      theme: currentTheme,
     );
   }
 }
