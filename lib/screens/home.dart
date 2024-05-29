@@ -7,7 +7,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 // --------My Widgets---------------//
 import 'package:to_do/widgets/checkbox_widget.dart';
 import 'package:to_do/widgets/delete_widget.dart';
-import 'package:to_do/widgets/information_display_widget.dart';
+import 'package:to_do/widgets/InformationButtonWidgets/information_display_widget.dart';
 import 'package:to_do/widgets/text_input_widget.dart';
 import 'package:to_do/models/task_model.dart';
 import 'package:to_do/widgets/pull_down_widget.dart';

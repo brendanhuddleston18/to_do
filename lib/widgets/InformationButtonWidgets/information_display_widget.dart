@@ -69,19 +69,6 @@ class _InfoTextBoxState extends State<InfoTextBox> {
     return Text(widget.taskInfo);
   }
 }
-// class InfoTextBox extends StatelessWidget {
-//   const InfoTextBox({
-//     super.key,
-//     required this.taskInfo,
-//   });
-
-//   final String taskInfo;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Text(taskInfo);
-//   }
-// }
 
 // ---------------------------------------------------- //
 
@@ -161,7 +148,10 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-      title: Text(widget.taskData.taskText),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Text(widget.taskData.taskText), const ReminderButton()],
+      ),
       content: Column(children: [
         Padding(
             padding: const EdgeInsets.only(left: 140),
@@ -179,7 +169,7 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
             updateTaskInfo: handleUpdateTaskInfo,
             isEditing: isEditing,
           ),
-        )
+        ),
       ]),
     );
   }
@@ -208,6 +198,49 @@ class _ExitButtonState extends State<ExitButton> {
         widget.onCloseModal();
         Navigator.pop(context);
       },
+    );
+  }
+}
+
+class ReminderButton extends StatefulWidget {
+  const ReminderButton({super.key});
+
+  @override
+  State<ReminderButton> createState() => _ReminderButtonState();
+}
+
+class _ReminderButtonState extends State<ReminderButton> {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(CupertinoIcons.bell_circle),
+      onPressed: () {},
+    );
+  }
+}
+
+class DatePicker extends StatefulWidget {
+  const DatePicker({super.key});
+
+  @override
+  State<DatePicker> createState() => _DatePickerState();
+}
+
+class _DatePickerState extends State<DatePicker> {
+  DateTime reminderDate = DateTime(2024, 5, 29, 17, 52);
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoDatePicker(
+      onDateTimeChanged: (DateTime newReminderDate) {
+        setState(() {
+          reminderDate = newReminderDate;
+        });
+      },
+      initialDateTime: reminderDate,
+      mode: CupertinoDatePickerMode.dateAndTime,
+      use24hFormat: true,
+      showDayOfWeek: true,
     );
   }
 }
