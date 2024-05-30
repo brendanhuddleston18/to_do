@@ -55,9 +55,6 @@ class _HomeWidgetState extends State<Home> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: widget.currentTheme.primaryContrastingColor,
-        leading: const Text(
-          "Blah",
-        ),
         middle: const Text("Brendan's To Do List"),
         trailing: PullDownMenu(builder: (_, showMenu) {
           return CupertinoButton(

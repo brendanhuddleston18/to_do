@@ -55,18 +55,27 @@ class _InfoEditButtonState extends State<InfoEditButton> {
 // ---------------------------------------------------- //
 
 class InfoTextBox extends StatefulWidget {
-  const InfoTextBox({super.key, required this.taskInfo});
+  const InfoTextBox(
+      {super.key, required this.taskInfo, required this.reminderDate});
 
   final String taskInfo;
+  final DateTime reminderDate;
 
   @override
   State<InfoTextBox> createState() => _InfoTextBoxState();
 }
 
 class _InfoTextBoxState extends State<InfoTextBox> {
+  String timeToShow = "";
   @override
   Widget build(BuildContext context) {
-    return Text(widget.taskInfo);
+    setState(() {
+      timeToShow = widget.reminderDate.toString();
+    });
+    // return Text(widget.taskInfo);
+    return Column(
+      children: [Text(widget.taskInfo), Text(timeToShow)],
+    );
   }
 }
 
@@ -147,10 +156,21 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime reminderDate = DateTime(2024, 5, 29, 17, 52);
+
+    void handleReminder(DateTime timeToShow) {
+      reminderDate = timeToShow;
+    }
+
     return CupertinoAlertDialog(
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [Text(widget.taskData.taskText), const ReminderButton()],
+        children: [
+          Text(widget.taskData.taskText),
+          ReminderButton(
+            handleReminder: handleReminder,
+          )
+        ],
       ),
       content: Column(children: [
         Padding(
@@ -162,7 +182,10 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
             )),
         Padding(
             padding: const EdgeInsets.only(bottom: 40),
-            child: InfoTextBox(taskInfo: taskInfo)),
+            child: InfoTextBox(
+              taskInfo: taskInfo,
+              reminderDate: reminderDate,
+            )),
         Align(
           alignment: Alignment.bottomCenter,
           child: InfoTextInput(
@@ -201,46 +224,62 @@ class _ExitButtonState extends State<ExitButton> {
     );
   }
 }
+// --------------------------------- //
 
 class ReminderButton extends StatefulWidget {
-  const ReminderButton({super.key});
+  const ReminderButton({super.key, required this.handleReminder});
+
+  final Function(DateTime timeToShow) handleReminder;
 
   @override
   State<ReminderButton> createState() => _ReminderButtonState();
 }
 
 class _ReminderButtonState extends State<ReminderButton> {
+  DateTime reminderDate = DateTime(2024, 5, 29, 17, 52);
+
+  void _showDatePicker() {
+    showCupertinoModalPopup(
+        context: context,
+        builder: ((BuildContext context) {
+          return Container(
+            height: 250,
+            color: CupertinoColors.systemBackground.resolveFrom(context),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 180,
+                  child: CupertinoDatePicker(
+                    onDateTimeChanged: (DateTime newReminderDate) {
+                      setState(() {
+                        reminderDate = newReminderDate;
+                        widget.handleReminder(newReminderDate);
+                      });
+                    },
+                    initialDateTime: reminderDate,
+                    mode: CupertinoDatePickerMode.dateAndTime,
+                    use24hFormat: true,
+                    showDayOfWeek: true,
+                  ),
+                ),
+                CupertinoButton(
+                  child: const Text("Done"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ),
+          );
+        }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(CupertinoIcons.bell_circle),
-      onPressed: () {},
-    );
-  }
-}
-
-class DatePicker extends StatefulWidget {
-  const DatePicker({super.key});
-
-  @override
-  State<DatePicker> createState() => _DatePickerState();
-}
-
-class _DatePickerState extends State<DatePicker> {
-  DateTime reminderDate = DateTime(2024, 5, 29, 17, 52);
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoDatePicker(
-      onDateTimeChanged: (DateTime newReminderDate) {
-        setState(() {
-          reminderDate = newReminderDate;
+        icon: const Icon(CupertinoIcons.bell_circle),
+        onPressed: () {
+          _showDatePicker();
         });
-      },
-      initialDateTime: reminderDate,
-      mode: CupertinoDatePickerMode.dateAndTime,
-      use24hFormat: true,
-      showDayOfWeek: true,
-    );
   }
 }
