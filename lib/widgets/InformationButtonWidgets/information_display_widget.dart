@@ -134,6 +134,7 @@ class InfoAlertDialog extends StatefulWidget {
 class _InfoAlertDialogState extends State<InfoAlertDialog> {
   bool isEditing = false;
   late String taskInfo;
+  DateTime reminderDate = DateTime(2024, 5, 29, 17, 52);
 
   @override
   void initState() {
@@ -146,6 +147,7 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
       taskInfo = updatedInfo;
       isEditing = false;
     });
+
     Task updatedTask = Task(
         description: taskInfo,
         id: widget.taskData.id,
@@ -156,10 +158,12 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime reminderDate = DateTime(2024, 5, 29, 17, 52);
-
     void handleReminder(DateTime timeToShow) {
-      reminderDate = timeToShow;
+      setState(
+        () {
+          reminderDate = timeToShow;
+        },
+      );
     }
 
     return CupertinoAlertDialog(
