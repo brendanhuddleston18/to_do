@@ -148,7 +148,8 @@ class _HomeWidgetState extends State<Home> {
                         id: uuid.v4(),
                         taskText: newTask,
                         description: '',
-                        timeCreated: timeCreated);
+                        timeCreated: timeCreated,
+                        reminderDate: '');
                     try {
                       widget.insertTask(taskToAdd);
                     } catch (e) {

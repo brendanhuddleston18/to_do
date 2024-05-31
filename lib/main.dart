@@ -15,22 +15,22 @@ void main() async {
     join(await getDatabasesPath(), 'tasks_database.db'),
     onCreate: (db, version) {
       return db.execute(
-          'CREATE TABLE tasksV6(id TEXT, task TEXT, description TEXT, timeCreated TEXT)');
+          'CREATE TABLE tasksV7(id TEXT, task TEXT, description TEXT, timeCreated TEXT, reminderDate TEXT)');
     },
     onUpgrade: (db, oldVersion, newVersion) {
-      if (newVersion == 6) {
+      if (newVersion == 7) {
         db.execute(
-            'CREATE TABLE tasksV6(id TEXT, task TEXT, description TEXT, timeCreated TEXT)');
+            'CREATE TABLE tasksV7(id TEXT, task TEXT, description TEXT, timeCreated TEXT, reminderDate TEXT)');
       }
     },
-    version: 6,
+    version: 7,
   );
 
   Future<void> insertTask(Task task) async {
     final db = await database;
 
     await db.insert(
-      'tasksV6',
+      'tasksV7',
       task.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -40,7 +40,7 @@ void main() async {
     final db = await database;
 
     await db.delete(
-      'tasksV6',
+      'tasksV7',
       where: 'id = ?',
       whereArgs: [id],
     );
@@ -50,13 +50,13 @@ void main() async {
     final db = await database;
 
     await db
-        .update('tasksV6', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
+        .update('tasksV7', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
   }
 
   Future<List<Task>> getTasks() async {
     final db = await database;
 
-    final List<Map<String, Object?>> taskMaps = await db.query('tasksV6');
+    final List<Map<String, Object?>> taskMaps = await db.query('tasksV7');
 
     return taskMaps.map((taskMap) {
       return Task(
@@ -64,6 +64,7 @@ void main() async {
         taskText: taskMap['task'] as String,
         description: taskMap['description'] as String,
         timeCreated: taskMap['timeCreated'] as String,
+        reminderDate: taskMap['reminderDate'] as String,
       );
     }).toList();
   }
@@ -115,7 +116,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   bool handleDarkSwitch() {
-    if (currentTheme == darkTheme){
+    if (currentTheme == darkTheme) {
       return true;
     } else {
       return false;
@@ -128,7 +129,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       initialRoute: '/',
       routes: {
         '/settings': (context) => SettingsWidget(
-            currentTheme: currentTheme,
+              currentTheme: currentTheme,
               handleDarkMode: handleDarkMode,
               handleDarkSwitch: handleDarkSwitch,
             ),

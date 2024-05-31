@@ -59,7 +59,7 @@ class InfoTextBox extends StatefulWidget {
       {super.key, required this.taskInfo, required this.reminderDate});
 
   final String taskInfo;
-  final DateTime reminderDate;
+  final String reminderDate;
 
   @override
   State<InfoTextBox> createState() => _InfoTextBoxState();
@@ -70,7 +70,7 @@ class _InfoTextBoxState extends State<InfoTextBox> {
   @override
   Widget build(BuildContext context) {
     setState(() {
-      timeToShow = widget.reminderDate.toString();
+      timeToShow = widget.reminderDate;
     });
     // return Text(widget.taskInfo);
     return Column(
@@ -134,12 +134,13 @@ class InfoAlertDialog extends StatefulWidget {
 class _InfoAlertDialogState extends State<InfoAlertDialog> {
   bool isEditing = false;
   late String taskInfo;
-  DateTime reminderDate = DateTime(2024, 5, 29, 17, 52);
+  late String reminderDate;
 
   @override
   void initState() {
     super.initState();
     taskInfo = widget.taskData.description;
+    reminderDate = widget.taskData.reminderDate;
   }
 
   void handleUpdateTaskInfo(String updatedInfo) {
@@ -152,20 +153,28 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
         description: taskInfo,
         id: widget.taskData.id,
         taskText: widget.taskData.taskText,
-        timeCreated: widget.taskData.timeCreated);
+        timeCreated: widget.taskData.timeCreated,
+        reminderDate: '');
+    widget.updateTask(updatedTask);
+  }
+
+  void handleReminder(DateTime timeToShow) {
+    setState(
+      () {
+        reminderDate = timeToShow.toString();
+      },
+    );
+    Task updatedTask = Task(
+        description: taskInfo,
+        id: widget.taskData.id,
+        taskText: widget.taskData.taskText,
+        timeCreated: widget.taskData.timeCreated,
+        reminderDate: timeToShow.toString());
     widget.updateTask(updatedTask);
   }
 
   @override
   Widget build(BuildContext context) {
-    void handleReminder(DateTime timeToShow) {
-      setState(
-        () {
-          reminderDate = timeToShow;
-        },
-      );
-    }
-
     return CupertinoAlertDialog(
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -257,7 +266,6 @@ class _ReminderButtonState extends State<ReminderButton> {
                     onDateTimeChanged: (DateTime newReminderDate) {
                       setState(() {
                         reminderDate = newReminderDate;
-                        widget.handleReminder(newReminderDate);
                       });
                     },
                     initialDateTime: reminderDate,
@@ -270,6 +278,7 @@ class _ReminderButtonState extends State<ReminderButton> {
                   child: const Text("Done"),
                   onPressed: () {
                     Navigator.of(context).pop();
+                    widget.handleReminder(reminderDate);
                   },
                 )
               ],
