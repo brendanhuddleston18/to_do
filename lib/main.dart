@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
+import 'package:to_do/notifications/notification_controller.dart';
 import 'package:to_do/screens/home.dart';
 import 'dart:async';
 import 'package:path/path.dart';
@@ -10,6 +9,7 @@ import 'package:to_do/screens/settings.dart';
 import 'package:to_do/themes/dark_theme.dart';
 import 'package:to_do/themes/light_theme.dart';
 import 'package:to_do/functions/time_check.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,13 +77,32 @@ void main() async {
     List<Task> tasksList = await tasksListFuture;
     for (Task task in tasksList) {
       if (timeCheck(task.reminderDate)) {
-        print("It's time to do ${task.taskText}");
-      } else {
-        print("You got time!");
+        AwesomeNotifications().createNotification(
+            content: NotificationContent(
+                id: 1,
+                channelKey: "basic_channel",
+                title: task.taskText,
+                body: task.description));
       }
     }
   }
 
+  await AwesomeNotifications().initialize(null, [
+    NotificationChannel(
+        channelGroupKey: "basic_channel_group",
+        channelKey: "basic_channel",
+        channelName: "Basic Notification",
+        channelDescription: "Basic notification channel")
+  ], channelGroups: [
+    NotificationChannelGroup(
+        channelGroupKey: "basic_channel_group", channelGroupName: "Basic Group")
+  ]);
+
+  bool isAllowedToSendNotification =
+      await AwesomeNotifications().isNotificationAllowed();
+  if (!isAllowedToSendNotification) {
+    AwesomeNotifications().requestPermissionToSendNotifications();
+  }
   runApp(MyApp(
     insertTask: insertTask,
     deleteTask: deleteTask,
@@ -118,6 +137,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+    AwesomeNotifications().setListeners(
+        onActionReceivedMethod: NotificationController.onActionReceivedMethod,
+        onDismissActionReceivedMethod:
+            NotificationController.onDismissActionReceivedMethod,
+        onNotificationCreatedMethod:
+            NotificationController.onNotificationCreateMethod,
+        onNotificationDisplayedMethod:
+            NotificationController.onNotificationDisplayedMethod);
     super.initState();
   }
 
