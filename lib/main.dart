@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:to_do/screens/home.dart';
 import 'dart:async';
@@ -7,6 +9,7 @@ import 'package:to_do/models/task_model.dart';
 import 'package:to_do/screens/settings.dart';
 import 'package:to_do/themes/dark_theme.dart';
 import 'package:to_do/themes/light_theme.dart';
+import 'package:to_do/functions/time_check.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,11 +72,24 @@ void main() async {
     }).toList();
   }
 
+  Future<void> checkTasksDate() async {
+    Future<List<Task>> tasksListFuture = getTasks();
+    List<Task> tasksList = await tasksListFuture;
+    for (Task task in tasksList) {
+      if (timeCheck(task.reminderDate)) {
+        print("It's time to do ${task.taskText}");
+      } else {
+        print("You got time!");
+      }
+    }
+  }
+
   runApp(MyApp(
     insertTask: insertTask,
     deleteTask: deleteTask,
     updateTask: updateTask,
     getTasks: getTasks,
+    checkTasksDate: checkTasksDate,
   ));
 }
 
@@ -83,11 +99,13 @@ class MyApp extends StatefulWidget {
       required this.getTasks,
       required this.insertTask,
       required this.deleteTask,
-      required this.updateTask});
+      required this.updateTask,
+      required this.checkTasksDate});
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
   final Future<void> Function(Task task) updateTask;
+  final Future<void> Function() checkTasksDate;
   final Future<List<Task>> Function() getTasks;
 
   @override
@@ -140,6 +158,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         deleteTask: widget.deleteTask,
         updateTask: widget.updateTask,
         handleDarkMode: handleDarkMode,
+        checkTasksDate: widget.checkTasksDate,
         tasksDB: widget.getTasks,
       ),
       debugShowCheckedModeBanner: false,

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:intl/intl.dart';
 
 // --------My Widgets---------------//
 import 'package:to_do/widgets/checkbox_widget.dart';
@@ -13,19 +14,20 @@ import 'package:to_do/models/task_model.dart';
 import 'package:to_do/widgets/pull_down_widget.dart';
 
 class Home extends StatefulWidget {
-  const Home({
-    super.key,
-    required this.insertTask,
-    required this.tasksDB,
-    required this.deleteTask,
-    required this.updateTask,
-    required this.handleDarkMode,
-    required this.currentTheme,
-  });
+  const Home(
+      {super.key,
+      required this.insertTask,
+      required this.tasksDB,
+      required this.deleteTask,
+      required this.updateTask,
+      required this.handleDarkMode,
+      required this.currentTheme,
+      required this.checkTasksDate});
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
   final Future<void> Function(Task task) updateTask;
+  final Future<void> Function() checkTasksDate;
   final void Function(bool isOn) handleDarkMode;
   final Future<List<Task>> Function() tasksDB;
   final CupertinoThemeData currentTheme;
@@ -43,6 +45,7 @@ class _HomeWidgetState extends State<Home> {
   void initState() {
     super.initState();
     taskFuture = _getTasks();
+    widget.checkTasksDate();
   }
 
   Future<List<Task>> _getTasks() async {
@@ -102,7 +105,7 @@ class _HomeWidgetState extends State<Home> {
                                             ),
                                             Positioned(
                                                 right: 60,
-                                                top: 350,
+                                                top: 332,
                                                 child: ExitButton(
                                                   onCloseModal: () {
                                                     setState(() {
@@ -143,12 +146,14 @@ class _HomeWidgetState extends State<Home> {
                 ),
                 child: TextInputWidget(
                   onAddTask: (String newTask) {
-                    String timeCreated = DateTime.now().toString();
+                    DateTime timeCreated = DateTime.now();
+                    String formattedTimeCreated =
+                        DateFormat('dd-MMM-yyyy - kk:mm').format(timeCreated);
                     Task taskToAdd = Task(
                         id: uuid.v4(),
                         taskText: newTask,
                         description: '',
-                        timeCreated: timeCreated,
+                        timeCreated: formattedTimeCreated,
                         reminderDate: '');
                     try {
                       widget.insertTask(taskToAdd);

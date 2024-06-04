@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do/models/task_model.dart';
+import 'package:intl/intl.dart';
 
 class InfoDisplayButtonWidget extends StatefulWidget {
   const InfoDisplayButtonWidget({
@@ -161,7 +162,7 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
   void handleReminder(DateTime timeToShow) {
     setState(
       () {
-        reminderDate = timeToShow.toString();
+        reminderDate = DateFormat('dd-MMM-yyyy - kk:mm').format(timeToShow);
       },
     );
     Task updatedTask = Task(
@@ -169,7 +170,7 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
         id: widget.taskData.id,
         taskText: widget.taskData.taskText,
         timeCreated: widget.taskData.timeCreated,
-        reminderDate: timeToShow.toString());
+        reminderDate: reminderDate);
     widget.updateTask(updatedTask);
   }
 
@@ -249,7 +250,7 @@ class ReminderButton extends StatefulWidget {
 }
 
 class _ReminderButtonState extends State<ReminderButton> {
-  DateTime reminderDate = DateTime(2024, 5, 29, 17, 52);
+  DateTime reminderDate = DateTime.now();
 
   void _showDatePicker() {
     showCupertinoModalPopup(
