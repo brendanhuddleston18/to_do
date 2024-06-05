@@ -1,11 +1,11 @@
 class Task {
   final String id;
-  final String taskText;
-  final String description;
+  String taskText;
+  String description;
   final String timeCreated;
-  final String reminderDate;
+  String reminderDate;
 
-   Task({
+  Task({
     required this.id,
     required this.taskText,
     required this.description,
@@ -13,7 +13,7 @@ class Task {
     required this.reminderDate,
   });
 
-  Map<String, Object?> toMap(){
+  Map<String, Object?> toMap() {
     return {
       'id': id,
       'task': taskText,
@@ -23,4 +23,3 @@ class Task {
     };
   }
 }
-

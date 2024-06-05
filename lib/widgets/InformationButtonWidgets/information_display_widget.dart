@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do/models/task_model.dart';
@@ -150,13 +151,8 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
       isEditing = false;
     });
 
-    Task updatedTask = Task(
-        description: taskInfo,
-        id: widget.taskData.id,
-        taskText: widget.taskData.taskText,
-        timeCreated: widget.taskData.timeCreated,
-        reminderDate: '');
-    widget.updateTask(updatedTask);
+    widget.taskData.description = taskInfo;
+    widget.updateTask(widget.taskData);
   }
 
   void handleReminder(DateTime timeToShow) {
@@ -165,13 +161,15 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
         reminderDate = DateFormat('dd-MMM-yyyy - kk:mm').format(timeToShow);
       },
     );
-    Task updatedTask = Task(
-        description: taskInfo,
-        id: widget.taskData.id,
-        taskText: widget.taskData.taskText,
-        timeCreated: widget.taskData.timeCreated,
-        reminderDate: reminderDate);
-    widget.updateTask(updatedTask);
+    widget.taskData.reminderDate = reminderDate;
+    widget.updateTask(widget.taskData);
+    AwesomeNotifications().createNotification(
+        content: NotificationContent(
+            id: widget.taskData.id.hashCode,
+            channelKey: "basic_channel",
+            title: widget.taskData.taskText,
+            body: widget.taskData.description),
+        schedule: NotificationCalendar.fromDate(date: timeToShow));
   }
 
   @override

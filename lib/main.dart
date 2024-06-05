@@ -8,7 +8,6 @@ import 'package:to_do/models/task_model.dart';
 import 'package:to_do/screens/settings.dart';
 import 'package:to_do/themes/dark_theme.dart';
 import 'package:to_do/themes/light_theme.dart';
-import 'package:to_do/functions/time_check.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
 void main() async {
@@ -72,20 +71,6 @@ void main() async {
     }).toList();
   }
 
-  Future<void> checkTasksDate() async {
-    Future<List<Task>> tasksListFuture = getTasks();
-    List<Task> tasksList = await tasksListFuture;
-    for (Task task in tasksList) {
-      if (timeCheck(task.reminderDate)) {
-        AwesomeNotifications().createNotification(
-            content: NotificationContent(
-                id: 1,
-                channelKey: "basic_channel",
-                title: task.taskText,
-                body: task.description));
-      }
-    }
-  }
 
   await AwesomeNotifications().initialize(null, [
     NotificationChannel(
@@ -108,23 +93,21 @@ void main() async {
     deleteTask: deleteTask,
     updateTask: updateTask,
     getTasks: getTasks,
-    checkTasksDate: checkTasksDate,
   ));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp(
-      {super.key,
-      required this.getTasks,
-      required this.insertTask,
-      required this.deleteTask,
-      required this.updateTask,
-      required this.checkTasksDate});
+  const MyApp({
+    super.key,
+    required this.getTasks,
+    required this.insertTask,
+    required this.deleteTask,
+    required this.updateTask,
+  });
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
   final Future<void> Function(Task task) updateTask;
-  final Future<void> Function() checkTasksDate;
   final Future<List<Task>> Function() getTasks;
 
   @override
@@ -185,7 +168,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         deleteTask: widget.deleteTask,
         updateTask: widget.updateTask,
         handleDarkMode: handleDarkMode,
-        checkTasksDate: widget.checkTasksDate,
         tasksDB: widget.getTasks,
       ),
       debugShowCheckedModeBanner: false,
