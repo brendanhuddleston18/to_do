@@ -164,6 +164,10 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
     widget.taskData.reminderDate = reminderDate;
     widget.updateTask(widget.taskData);
     AwesomeNotifications().createNotification(
+        actionButtons: [
+          NotificationActionButton(key: 'markDone', label: 'Mark as done'),
+          NotificationActionButton(key: 'delete', label: 'Delete task')
+        ],
         content: NotificationContent(
             id: widget.taskData.id.hashCode,
             channelKey: "basic_channel",
