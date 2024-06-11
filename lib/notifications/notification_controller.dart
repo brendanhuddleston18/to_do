@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:to_do/globals.dart';
 
 class NotificationController {
   @pragma("vm:entry-point")
@@ -19,9 +20,15 @@ class NotificationController {
   static Future<void> onActionReceivedMethod(
       ReceivedAction receivedAction) async {
     if (receivedAction.buttonKeyPressed == 'viewTask') {
-      print("Task viewed");
+      if (receivedAction.payload?['taskID'] != null) {
+        String taskToView = receivedAction.payload!['taskID']!;
+        print('viewing task $taskToView');
+      }
     } else if (receivedAction.buttonKeyPressed == 'delete') {
-      print("delete task");
+      if (receivedAction.payload?['taskID'] != null) {
+        String taskToDelete = receivedAction.payload!['taskID']!;
+        globalDeleteTask!(taskToDelete);
+      }
     }
   }
 }

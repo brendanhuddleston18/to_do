@@ -169,6 +169,7 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
           NotificationActionButton(key: 'delete', label: 'Delete task')
         ],
         content: NotificationContent(
+            payload: {"taskID": widget.taskData.id},
             id: widget.taskData.id.hashCode,
             channelKey: "basic_channel",
             title: widget.taskData.taskText,

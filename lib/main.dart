@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:to_do/globals.dart';
 import 'package:to_do/notifications/notification_controller.dart';
 import 'package:to_do/screens/home.dart';
 import 'dart:async';
@@ -71,7 +72,7 @@ void main() async {
     }).toList();
   }
 
-
+  globalDeleteTask = deleteTask;
   await AwesomeNotifications().initialize(null, [
     NotificationChannel(
         channelGroupKey: "basic_channel_group",
