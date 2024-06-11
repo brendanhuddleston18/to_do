@@ -1,23 +1,25 @@
 class Task {
   final String id;
-  final String taskText;
-  // final bool isChecked;
+  String taskText;
+  String description;
   final String timeCreated;
+  String reminderDate;
 
-   Task({
+  Task({
     required this.id,
     required this.taskText,
-    // required this.isChecked,
+    required this.description,
     required this.timeCreated,
+    required this.reminderDate,
   });
 
-  Map<String, Object?> toMap(){
+  Map<String, Object?> toMap() {
     return {
       'id': id,
       'task': taskText,
-      // 'isChecked': isChecked,
+      'description': description,
       'timeCreated': timeCreated,
+      'reminderDate': reminderDate,
     };
   }
 }
-

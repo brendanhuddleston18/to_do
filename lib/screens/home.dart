@@ -1,8 +1,17 @@
+// --------External------------------//
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:intl/intl.dart';
+
+// --------My Widgets---------------//
+import 'package:to_do/widgets/checkbox_widget.dart';
+import 'package:to_do/widgets/delete_widget.dart';
+import 'package:to_do/widgets/InformationButtonWidgets/information_display_widget.dart';
+import 'package:to_do/widgets/text_input_widget.dart';
 import 'package:to_do/models/task_model.dart';
+import 'package:to_do/widgets/pull_down_widget.dart';
 
 class Home extends StatefulWidget {
   const Home({
@@ -10,11 +19,18 @@ class Home extends StatefulWidget {
     required this.insertTask,
     required this.tasksDB,
     required this.deleteTask,
+    required this.updateTask,
+    required this.handleDarkMode,
+    required this.currentTheme,
   });
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
+  final Future<void> Function(Task task) updateTask;
+
+  final void Function(bool isOn) handleDarkMode;
   final Future<List<Task>> Function() tasksDB;
+  final CupertinoThemeData currentTheme;
 
   @override
   State<Home> createState() => _HomeWidgetState();
@@ -39,11 +55,17 @@ class _HomeWidgetState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        backgroundColor: Color.fromRGBO(0, 127, 255, 1),
-        leading: Text("Panel"),
-        middle: Text("Brendan's To Do List"),
-        trailing: Text("Time"),
+      navigationBar: CupertinoNavigationBar(
+        backgroundColor: widget.currentTheme.primaryContrastingColor,
+        middle: const Text("Brendan's To Do List"),
+        trailing: PullDownMenu(builder: (_, showMenu) {
+          return CupertinoButton(
+            onPressed: showMenu,
+            padding: EdgeInsets.zero,
+            pressedOpacity: 1,
+            child: const Icon(CupertinoIcons.ellipsis),
+          );
+        }),
       ),
       child: Stack(
         children: [
@@ -53,15 +75,47 @@ class _HomeWidgetState extends State<Home> {
                 var tasks = snapshot.data ?? [];
                 if (snapshot.hasData) {
                   return CupertinoListSection(
-                    header: const Text("My reminders"),
+                    backgroundColor:
+                        widget.currentTheme.primaryContrastingColor,
+                    header: const Text(
+                      "My Reminders:",
+                      selectionColor: Colors.blue,
+                    ),
                     children: tasks.map<Widget>((Task task) {
                       return Animate(
-                          effects: const [FlipEffect()],
+                          effects: const [],
                           child: CupertinoListTile(
                             key: ValueKey(task.id),
                             leading: const CheckboxWidget(),
                             title: Text(task.taskText),
                             subtitle: Text(task.timeCreated),
+                            additionalInfo: InfoDisplayButtonWidget(
+                                information: task.taskText,
+                                showModal: (String info) {
+                                  showCupertinoModalPopup(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Stack(
+                                          children: [
+                                            InfoAlertDialog(
+                                              taskData: task,
+                                              updateTask: widget.updateTask,
+                                            ),
+                                            Positioned(
+                                                right: 60,
+                                                top: 332,
+                                                child: ExitButton(
+                                                  onCloseModal: () {
+                                                    setState(() {
+                                                      taskFuture = _getTasks();
+                                                    });
+                                                  },
+                                                ))
+                                          ],
+                                        );
+                                      });
+                                }),
                             trailing: DeleteWidget(
                               onDeleteTask: widget.deleteTask,
                               taskID: task.id,
@@ -91,12 +145,15 @@ class _HomeWidgetState extends State<Home> {
                 ),
                 child: TextInputWidget(
                   onAddTask: (String newTask) {
-                    String timeCreated = DateTime.now().toString();
+                    DateTime timeCreated = DateTime.now();
+                    String formattedTimeCreated =
+                        DateFormat('dd-MMM-yyyy - kk:mm').format(timeCreated);
                     Task taskToAdd = Task(
                         id: uuid.v4(),
                         taskText: newTask,
-                        // isChecked: false,
-                        timeCreated: timeCreated);
+                        description: '',
+                        timeCreated: formattedTimeCreated,
+                        reminderDate: '');
                     try {
                       widget.insertTask(taskToAdd);
                     } catch (e) {
@@ -110,89 +167,6 @@ class _HomeWidgetState extends State<Home> {
               ))
         ],
       ),
-    );
-  }
-}
-
-class CheckboxWidget extends StatefulWidget {
-  const CheckboxWidget({
-    super.key,
-  });
-
-  @override
-  State<CheckboxWidget> createState() => _CheckboxWidgetState();
-}
-
-class _CheckboxWidgetState extends State<CheckboxWidget> {
-  bool? checkedState = false;
-  void handleCheckedState(bool? value) {
-    setState(
-      () {
-        checkedState = value;
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoCheckbox(
-        value: checkedState, onChanged: handleCheckedState);
-  }
-}
-
-class TextInputWidget extends StatefulWidget {
-  const TextInputWidget({super.key, required this.onAddTask});
-
-  final Function(String) onAddTask;
-
-  @override
-  State<TextInputWidget> createState() => _TextInputWidgetState();
-}
-
-class _TextInputWidgetState extends State<TextInputWidget> {
-  TextEditingController controller = TextEditingController();
-
-  handleTaskAndClear() {
-    widget.onAddTask(controller.text);
-    controller.clear();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoTextField(
-        controller: controller,
-        placeholder: "Enter a task!",
-        suffix: IconButton(
-          onPressed: () => handleTaskAndClear(),
-          icon: const Icon(CupertinoIcons.paperplane),
-        ));
-  }
-}
-
-class DeleteWidget extends StatefulWidget {
-  const DeleteWidget({
-    super.key,
-    required this.onDeleteTask,
-    required this.taskID,
-    required this.handleRefresh,
-  });
-
-  final Future<void> Function(String id) onDeleteTask;
-  final Function() handleRefresh;
-  final String taskID;
-
-  @override
-  State<DeleteWidget> createState() => _DeleteWidgetState();
-}
-
-class _DeleteWidgetState extends State<DeleteWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () => widget
-          .onDeleteTask(widget.taskID)
-          .then((_) => widget.handleRefresh()),
-      icon: const Icon(CupertinoIcons.delete),
     );
   }
 }
