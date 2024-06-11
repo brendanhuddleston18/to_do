@@ -1,6 +1,8 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do/models/task_model.dart';
+import 'package:intl/intl.dart';
 
 class InfoDisplayButtonWidget extends StatefulWidget {
   const InfoDisplayButtonWidget({
@@ -55,33 +57,29 @@ class _InfoEditButtonState extends State<InfoEditButton> {
 // ---------------------------------------------------- //
 
 class InfoTextBox extends StatefulWidget {
-  const InfoTextBox({super.key, required this.taskInfo});
+  const InfoTextBox(
+      {super.key, required this.taskInfo, required this.reminderDate});
 
   final String taskInfo;
+  final String reminderDate;
 
   @override
   State<InfoTextBox> createState() => _InfoTextBoxState();
 }
 
 class _InfoTextBoxState extends State<InfoTextBox> {
+  String timeToShow = "";
   @override
   Widget build(BuildContext context) {
-    return Text(widget.taskInfo);
+    setState(() {
+      timeToShow = widget.reminderDate;
+    });
+    // return Text(widget.taskInfo);
+    return Column(
+      children: [Text(widget.taskInfo), Text(timeToShow)],
+    );
   }
 }
-// class InfoTextBox extends StatelessWidget {
-//   const InfoTextBox({
-//     super.key,
-//     required this.taskInfo,
-//   });
-
-//   final String taskInfo;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Text(taskInfo);
-//   }
-// }
 
 // ---------------------------------------------------- //
 
@@ -138,11 +136,13 @@ class InfoAlertDialog extends StatefulWidget {
 class _InfoAlertDialogState extends State<InfoAlertDialog> {
   bool isEditing = false;
   late String taskInfo;
+  late String reminderDate;
 
   @override
   void initState() {
     super.initState();
     taskInfo = widget.taskData.description;
+    reminderDate = widget.taskData.reminderDate;
   }
 
   void handleUpdateTaskInfo(String updatedInfo) {
@@ -150,18 +150,45 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
       taskInfo = updatedInfo;
       isEditing = false;
     });
-    Task updatedTask = Task(
-        description: taskInfo,
-        id: widget.taskData.id,
-        taskText: widget.taskData.taskText,
-        timeCreated: widget.taskData.timeCreated);
-    widget.updateTask(updatedTask);
+
+    widget.taskData.description = taskInfo;
+    widget.updateTask(widget.taskData);
+  }
+
+  void handleReminder(DateTime timeToShow) {
+    setState(
+      () {
+        reminderDate = DateFormat('dd-MMM-yyyy - kk:mm').format(timeToShow);
+      },
+    );
+    widget.taskData.reminderDate = reminderDate;
+    widget.updateTask(widget.taskData);
+    AwesomeNotifications().createNotification(
+        actionButtons: [
+          NotificationActionButton(key: 'viewTask', label: 'View Task'),
+          NotificationActionButton(key: 'delete', label: 'Delete task')
+        ],
+        content: NotificationContent(
+            payload: {"taskID": widget.taskData.id},
+            id: widget.taskData.id.hashCode,
+            channelKey: "basic_channel",
+            title: widget.taskData.taskText,
+            body: widget.taskData.description),
+        schedule: NotificationCalendar.fromDate(date: timeToShow));
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-      title: Text(widget.taskData.taskText),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(widget.taskData.taskText),
+          ReminderButton(
+            handleReminder: handleReminder,
+          )
+        ],
+      ),
       content: Column(children: [
         Padding(
             padding: const EdgeInsets.only(left: 140),
@@ -172,14 +199,17 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
             )),
         Padding(
             padding: const EdgeInsets.only(bottom: 40),
-            child: InfoTextBox(taskInfo: taskInfo)),
+            child: InfoTextBox(
+              taskInfo: taskInfo,
+              reminderDate: reminderDate,
+            )),
         Align(
           alignment: Alignment.bottomCenter,
           child: InfoTextInput(
             updateTaskInfo: handleUpdateTaskInfo,
             isEditing: isEditing,
           ),
-        )
+        ),
       ]),
     );
   }
@@ -209,5 +239,64 @@ class _ExitButtonState extends State<ExitButton> {
         Navigator.pop(context);
       },
     );
+  }
+}
+// --------------------------------- //
+
+class ReminderButton extends StatefulWidget {
+  const ReminderButton({super.key, required this.handleReminder});
+
+  final Function(DateTime timeToShow) handleReminder;
+
+  @override
+  State<ReminderButton> createState() => _ReminderButtonState();
+}
+
+class _ReminderButtonState extends State<ReminderButton> {
+  DateTime reminderDate = DateTime.now();
+
+  void _showDatePicker() {
+    showCupertinoModalPopup(
+        context: context,
+        builder: ((BuildContext context) {
+          return Container(
+            height: 250,
+            color: CupertinoColors.systemBackground.resolveFrom(context),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 180,
+                  child: CupertinoDatePicker(
+                    onDateTimeChanged: (DateTime newReminderDate) {
+                      setState(() {
+                        reminderDate = newReminderDate;
+                      });
+                    },
+                    initialDateTime: reminderDate,
+                    mode: CupertinoDatePickerMode.dateAndTime,
+                    use24hFormat: true,
+                    showDayOfWeek: true,
+                  ),
+                ),
+                CupertinoButton(
+                  child: const Text("Done"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    widget.handleReminder(reminderDate);
+                  },
+                )
+              ],
+            ),
+          );
+        }));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        icon: const Icon(CupertinoIcons.bell_circle),
+        onPressed: () {
+          _showDatePicker();
+        });
   }
 }

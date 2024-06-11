@@ -3,11 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:intl/intl.dart';
 
 // --------My Widgets---------------//
 import 'package:to_do/widgets/checkbox_widget.dart';
 import 'package:to_do/widgets/delete_widget.dart';
-import 'package:to_do/widgets/information_display_widget.dart';
+import 'package:to_do/widgets/InformationButtonWidgets/information_display_widget.dart';
 import 'package:to_do/widgets/text_input_widget.dart';
 import 'package:to_do/models/task_model.dart';
 import 'package:to_do/widgets/pull_down_widget.dart';
@@ -26,6 +27,7 @@ class Home extends StatefulWidget {
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
   final Future<void> Function(Task task) updateTask;
+
   final void Function(bool isOn) handleDarkMode;
   final Future<List<Task>> Function() tasksDB;
   final CupertinoThemeData currentTheme;
@@ -55,9 +57,6 @@ class _HomeWidgetState extends State<Home> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: widget.currentTheme.primaryContrastingColor,
-        leading: const Text(
-          "Blah",
-        ),
         middle: const Text("Brendan's To Do List"),
         trailing: PullDownMenu(builder: (_, showMenu) {
           return CupertinoButton(
@@ -105,7 +104,7 @@ class _HomeWidgetState extends State<Home> {
                                             ),
                                             Positioned(
                                                 right: 60,
-                                                top: 350,
+                                                top: 332,
                                                 child: ExitButton(
                                                   onCloseModal: () {
                                                     setState(() {
@@ -146,12 +145,15 @@ class _HomeWidgetState extends State<Home> {
                 ),
                 child: TextInputWidget(
                   onAddTask: (String newTask) {
-                    String timeCreated = DateTime.now().toString();
+                    DateTime timeCreated = DateTime.now();
+                    String formattedTimeCreated =
+                        DateFormat('dd-MMM-yyyy - kk:mm').format(timeCreated);
                     Task taskToAdd = Task(
                         id: uuid.v4(),
                         taskText: newTask,
                         description: '',
-                        timeCreated: timeCreated);
+                        timeCreated: formattedTimeCreated,
+                        reminderDate: '');
                     try {
                       widget.insertTask(taskToAdd);
                     } catch (e) {
