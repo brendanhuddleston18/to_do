@@ -2,27 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
-class SidePanelWidget extends StatefulWidget {
-  const SidePanelWidget({super.key});
-
-  @override
-  State<SidePanelWidget> createState() => _SidePanelWidgetState();
-}
-
-class _SidePanelWidgetState extends State<SidePanelWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-        onPressed: () {}, icon: const Icon(CupertinoIcons.ellipsis));
-  }
-}
-
-// -------------------------------------//
-
 class PullDownMenu extends StatelessWidget {
-  const PullDownMenu({super.key, required this.builder});
+  const PullDownMenu(
+      {super.key, required this.builder, required this.isLoggedIn});
 
   final PullDownMenuButtonBuilder builder;
+  final bool isLoggedIn;
+
+  String handleLoggedIn() {
+    if (isLoggedIn) {
+      return 'Sign out';
+    } else {
+      return 'Sign In';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +28,9 @@ class PullDownMenu extends StatelessWidget {
               ),
               title: "Profile",
               subtitle: "Tap to open",
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/profile');
+              },
               icon: CupertinoIcons.profile_circled,
             ),
             const PullDownMenuDivider.large(),
@@ -62,8 +57,12 @@ class PullDownMenu extends StatelessWidget {
                 onTap: () {}, title: "About", icon: CupertinoIcons.book),
             const PullDownMenuDivider.large(),
             PullDownMenuItem(
-              onTap: () {},
-              title: "Sign out",
+              onTap: () {
+                if (!isLoggedIn) {
+                  Navigator.pushNamed(context, '/login');
+                }
+              },
+              title: handleLoggedIn(),
               icon: CupertinoIcons.device_phone_portrait,
               isDestructive: true,
             )
