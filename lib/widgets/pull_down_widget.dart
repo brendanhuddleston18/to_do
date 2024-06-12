@@ -2,19 +2,36 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
-class PullDownMenu extends StatelessWidget {
+class PullDownMenu extends StatefulWidget {
   const PullDownMenu(
       {super.key, required this.builder, required this.isLoggedIn});
 
   final PullDownMenuButtonBuilder builder;
   final bool isLoggedIn;
 
-  String handleLoggedIn() {
-    if (isLoggedIn) {
-      return 'Sign out';
-    } else {
-      return 'Sign In';
-    }
+  @override
+  State<PullDownMenu> createState() => _PullDownMenuState();
+}
+
+class _PullDownMenuState extends State<PullDownMenu> {
+  String signInOrSignOut = 'Sign in';
+
+  @override
+  void initState() {
+    super.initState();
+    handleLoggedIn();
+  }
+
+  void handleLoggedIn() {
+    setState(
+      () {
+        if (widget.isLoggedIn) {
+          signInOrSignOut = 'Sign out';
+        } else {
+          signInOrSignOut = 'Sign In';
+        }
+      },
+    );
   }
 
   @override
@@ -58,36 +75,16 @@ class PullDownMenu extends StatelessWidget {
             const PullDownMenuDivider.large(),
             PullDownMenuItem(
               onTap: () {
-                if (!isLoggedIn) {
+                if (!widget.isLoggedIn) {
                   Navigator.pushNamed(context, '/login');
                 }
               },
-              title: handleLoggedIn(),
+              title: signInOrSignOut,
               icon: CupertinoIcons.device_phone_portrait,
               isDestructive: true,
             )
           ];
         },
-        buttonBuilder: builder);
+        buttonBuilder: widget.builder);
   }
 }
-
-// class PullDownMenu extends StatefulWidget {
-//   const PullDownMenu({super.key, required this.builder});
-
-
-
-//   @override
-//   State<PullDownMenu> createState() => _PullDownMenuState();
-// }
-
-// class _PullDownMenuState extends State<PullDownMenu> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return PullDownButton(itemBuilder: (context){
-//       return [PullDownMenuHeader(leading: ColoredBox(
-//               color: CupertinoColors.systemBlue.resolveFrom(context),
-//             ), title: "Profile")];
-//     }, buttonBuilder: buttonBuilder);
-//   }
-// }

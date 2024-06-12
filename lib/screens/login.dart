@@ -13,7 +13,7 @@ class LoginWidget extends StatefulWidget {
 class _LoginWidgetState extends State<LoginWidget> {
   void handleLoginAction() {
     widget.handleLoggedIn(true);
-    Navigator.pushNamed(context, '/');
+    Navigator.popUntil(context, ModalRoute.withName('/'));
   }
 
   @override
