@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProfileWidget extends StatefulWidget {
-  const ProfileWidget({super.key, required this.userLoggedIn});
+  const ProfileWidget(
+      {super.key, required this.userLoggedIn, required this.username});
 
   final bool userLoggedIn;
+  final String username;
 
   @override
   State<ProfileWidget> createState() => _ProfileWidgetState();
@@ -21,15 +25,28 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 icon: const Icon(CupertinoIcons.left_chevron)),
           ),
           // TODO: Make this look pretty, change padding, font, icons?
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 100),
-            child: CupertinoListSection(
-              children: const [
-                Text("Profile name"),
-                Text("Email"),
-                Text("Etc")
-              ],
-            ),
+          child: Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 60, vertical: 140),
+                child: Image.asset(
+                  './assets/images/defaultProfilePic.webp',
+                  height: 60,
+                  width: 60,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                child: CupertinoListSection(
+                  children: [
+                    Text(widget.username),
+                    const Text("Email"),
+                    const Text("Etc")
+                  ],
+                ),
+              )
+            ],
           ));
     } else {
       return CupertinoPageScaffold(

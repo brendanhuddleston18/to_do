@@ -22,7 +22,8 @@ class Home extends StatefulWidget {
       required this.updateTask,
       required this.handleDarkMode,
       required this.currentTheme,
-      required this.isLoggedIn});
+      required this.isLoggedIn,
+      required this.username});
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
@@ -32,6 +33,8 @@ class Home extends StatefulWidget {
   final bool isLoggedIn;
   final Future<List<Task>> Function() tasksDB;
   final CupertinoThemeData currentTheme;
+
+  final String username;
 
   @override
   State<Home> createState() => _HomeWidgetState();
@@ -58,7 +61,7 @@ class _HomeWidgetState extends State<Home> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: widget.currentTheme.primaryContrastingColor,
-        middle: const Text("Brendan's To Do List"),
+        middle: Text("${widget.username}'s To Do List"),
         trailing: PullDownMenu(
           builder: (_, showMenu) {
             return CupertinoButton(

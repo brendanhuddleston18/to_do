@@ -160,6 +160,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     userLoggedIn = isSignedIn;
   }
 
+  String username = "User";
+
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
@@ -172,9 +174,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             ),
         '/login': (context) => LoginWidget(
               handleLoggedIn: handleLoggedIn,
+              handleUsername: (String newUsername) {
+                setState(
+                  () {
+                    username = newUsername;
+                  },
+                );
+              },
             ),
         '/profile': (context) => ProfileWidget(
               userLoggedIn: userLoggedIn,
+              username: username,
             )
       },
       home: Home(
@@ -185,6 +195,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         updateTask: widget.updateTask,
         handleDarkMode: handleDarkMode,
         tasksDB: widget.getTasks,
+        username: username,
       ),
       debugShowCheckedModeBanner: false,
       theme: currentTheme,
