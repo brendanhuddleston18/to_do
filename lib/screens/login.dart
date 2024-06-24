@@ -23,6 +23,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           leading: IconButton(
               onPressed: () => Navigator.pop(context),
               icon: const Icon(CupertinoIcons.left_chevron))),
+              // TODO: Add username input text field for 'login'
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 140, horizontal: 140),
         child: CupertinoButton(

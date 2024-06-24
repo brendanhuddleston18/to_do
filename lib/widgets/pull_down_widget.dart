@@ -22,6 +22,7 @@ class _PullDownMenuState extends State<PullDownMenu> {
     handleLoggedIn();
   }
 
+  // TODO: Fix sign-in/sign-out state in pulldown widget
   void handleLoggedIn() {
     setState(
       () {

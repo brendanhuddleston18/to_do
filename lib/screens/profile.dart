@@ -20,8 +20,16 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 onPressed: () => Navigator.pop(context),
                 icon: const Icon(CupertinoIcons.left_chevron)),
           ),
-          child: CupertinoListSection(
-            children: const [Text("Profile Name"), Text("Email"), Text("Etc")],
+          // TODO: Make this look pretty, change padding, font, icons?
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 100),
+            child: CupertinoListSection(
+              children: const [
+                Text("Profile name"),
+                Text("Email"),
+                Text("Etc")
+              ],
+            ),
           ));
     } else {
       return CupertinoPageScaffold(
