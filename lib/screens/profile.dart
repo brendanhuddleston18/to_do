@@ -23,29 +23,33 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             leading: IconButton(
                 onPressed: () => Navigator.pop(context),
                 icon: const Icon(CupertinoIcons.left_chevron)),
+            middle: const Text("Profile"),
           ),
-          // TODO: Make this look pretty, change padding, font, icons?
           child: Column(
             children: [
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 60, vertical: 140),
+                padding: const EdgeInsets.fromLTRB(60, 120, 60, 0),
                 child: Image.asset(
                   './assets/images/defaultProfilePic.webp',
-                  height: 60,
-                  width: 60,
+                  height: 160,
+                  width: 160,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                child: CupertinoListSection(
-                  children: [
-                    Text(widget.username),
-                    const Text("Email"),
-                    const Text("Etc")
-                  ],
-                ),
-              )
+              CupertinoListSection(
+                header: const Text("Profile Info"),
+                backgroundColor: CupertinoColors.systemBackground,
+                hasLeading: false,
+                children: [
+                  CupertinoListTile(
+                    title: Text(widget.username),
+                    trailing: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(CupertinoIcons.pencil_circle)),
+                  ),
+                  const CupertinoListTile(title: Text("Email")),
+                  const CupertinoListTile(title: Text("Etc")),
+                ],
+              ),
             ],
           ));
     } else {

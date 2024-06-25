@@ -23,11 +23,13 @@ class Home extends StatefulWidget {
       required this.handleDarkMode,
       required this.currentTheme,
       required this.isLoggedIn,
-      required this.username});
+      required this.username,
+      required this.handleLoggedIn});
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
   final Future<void> Function(Task task) updateTask;
+  final void Function(bool isSignedIn) handleLoggedIn;
 
   final void Function(bool isOn) handleDarkMode;
   final bool isLoggedIn;
@@ -35,7 +37,6 @@ class Home extends StatefulWidget {
   final CupertinoThemeData currentTheme;
 
   final String username;
-
   @override
   State<Home> createState() => _HomeWidgetState();
 }
@@ -72,6 +73,8 @@ class _HomeWidgetState extends State<Home> {
             );
           },
           isLoggedIn: widget.isLoggedIn,
+          username: widget.username,
+          handleLoggedIn: widget.handleLoggedIn,
         ),
       ),
       child: Stack(

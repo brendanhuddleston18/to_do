@@ -4,10 +4,16 @@ import 'package:pull_down_button/pull_down_button.dart';
 
 class PullDownMenu extends StatefulWidget {
   const PullDownMenu(
-      {super.key, required this.builder, required this.isLoggedIn});
+      {super.key,
+      required this.builder,
+      required this.isLoggedIn,
+      required this.username,
+      required this.handleLoggedIn});
 
   final PullDownMenuButtonBuilder builder;
   final bool isLoggedIn;
+  final String username;
+  final Function(bool isSignedIn) handleLoggedIn;
 
   @override
   State<PullDownMenu> createState() => _PullDownMenuState();
@@ -22,17 +28,24 @@ class _PullDownMenuState extends State<PullDownMenu> {
     handleLoggedIn();
   }
 
-  // TODO: Fix sign-in/sign-out state in pulldown widget
+  @override
+  void didUpdateWidget(covariant PullDownMenu oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isLoggedIn != widget.isLoggedIn) {
+      handleLoggedIn();
+    }
+  }
+  
   void handleLoggedIn() {
-    setState(
-      () {
-        if (widget.isLoggedIn) {
-          signInOrSignOut = 'Sign out';
-        } else {
-          signInOrSignOut = 'Sign In';
-        }
-      },
-    );
+    if (widget.isLoggedIn) {
+      setState(() {
+        signInOrSignOut = 'Sign out';
+      });
+    } else {
+      setState(() {
+        signInOrSignOut = 'Sign In';
+      });
+    }
   }
 
   @override
@@ -41,10 +54,8 @@ class _PullDownMenuState extends State<PullDownMenu> {
         itemBuilder: (context) {
           return [
             PullDownMenuHeader(
-              leading: ColoredBox(
-                color: CupertinoColors.systemBlue.resolveFrom(context),
-              ),
-              title: "Profile",
+              leading: Image.asset('./assets/images/defaultProfilePic.webp'),
+              title: widget.username,
               subtitle: "Tap to open",
               onTap: () {
                 Navigator.pushNamed(context, '/profile');
@@ -78,6 +89,8 @@ class _PullDownMenuState extends State<PullDownMenu> {
               onTap: () {
                 if (!widget.isLoggedIn) {
                   Navigator.pushNamed(context, '/login');
+                } else {
+                  widget.handleLoggedIn(false);
                 }
               },
               title: signInOrSignOut,

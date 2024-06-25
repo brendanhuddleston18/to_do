@@ -158,6 +158,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   void handleLoggedIn(bool isSignedIn) {
     userLoggedIn = isSignedIn;
+    if (!isSignedIn) {
+      setState(() {
+        username = "User";
+      });
+    }
   }
 
   String username = "User";
@@ -196,6 +201,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         handleDarkMode: handleDarkMode,
         tasksDB: widget.getTasks,
         username: username,
+        handleLoggedIn: handleLoggedIn,
       ),
       debugShowCheckedModeBanner: false,
       theme: currentTheme,
