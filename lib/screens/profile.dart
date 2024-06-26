@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget(
-      {super.key, required this.userLoggedIn, required this.username, required this.handleUsername});
+      {super.key,
+      required this.userLoggedIn,
+      required this.username,
+      required this.handleUsername});
 
   final bool userLoggedIn;
   final String username;
@@ -79,6 +82,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         icon: const Icon(CupertinoIcons.floppy_disk),
                         onPressed: () {
                           widget.handleUsername(controller.text);
+                          isEditing = false;
                         },
                       ),
                     ),
