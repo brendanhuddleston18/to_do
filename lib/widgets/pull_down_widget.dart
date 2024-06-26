@@ -35,7 +35,7 @@ class _PullDownMenuState extends State<PullDownMenu> {
       handleLoggedIn();
     }
   }
-  
+
   void handleLoggedIn() {
     if (widget.isLoggedIn) {
       setState(() {
@@ -90,7 +90,7 @@ class _PullDownMenuState extends State<PullDownMenu> {
                 if (!widget.isLoggedIn) {
                   Navigator.pushNamed(context, '/login');
                 } else {
-                  widget.handleLoggedIn(false);
+                  Navigator.pushNamed(context, '/login');
                 }
               },
               title: signInOrSignOut,

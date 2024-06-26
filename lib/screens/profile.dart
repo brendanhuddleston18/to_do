@@ -1,57 +1,92 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget(
-      {super.key, required this.userLoggedIn, required this.username});
+      {super.key, required this.userLoggedIn, required this.username, required this.handleUsername});
 
   final bool userLoggedIn;
   final String username;
+  final Function(String) handleUsername;
 
   @override
   State<ProfileWidget> createState() => _ProfileWidgetState();
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
+  bool isEditing = false;
+
+  void handleEditing() {
+    if (!isEditing) {
+      isEditing = true;
+    } else {
+      isEditing = false;
+    }
+  }
+
+  TextEditingController controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     if (widget.userLoggedIn) {
       return CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBar(
-            leading: IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(CupertinoIcons.left_chevron)),
-            middle: const Text("Profile"),
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(60, 120, 60, 0),
-                child: Image.asset(
-                  './assets/images/defaultProfilePic.webp',
-                  height: 160,
-                  width: 160,
+        navigationBar: CupertinoNavigationBar(
+          leading: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(CupertinoIcons.left_chevron)),
+          middle: const Text("Profile"),
+        ),
+        child: SafeArea(
+            child: Column(
+          children: [
+            Image.asset(
+              'assets/images/defaultProfilePic.webp',
+              height: 160,
+              width: 160,
+            ),
+            CupertinoListSection(
+              header: const Text("Profile Info"),
+              backgroundColor: CupertinoColors.systemBackground,
+              hasLeading: false,
+              children: [
+                CupertinoListTile(
+                  title: Text(widget.username),
+                  trailing: IconButton(
+                      onPressed: () {
+                        setState(
+                          () {
+                            handleEditing();
+                          },
+                        );
+                      },
+                      icon: const Icon(CupertinoIcons.pencil_circle)),
                 ),
-              ),
-              CupertinoListSection(
-                header: const Text("Profile Info"),
-                backgroundColor: CupertinoColors.systemBackground,
-                hasLeading: false,
-                children: [
-                  CupertinoListTile(
-                    title: Text(widget.username),
-                    trailing: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(CupertinoIcons.pencil_circle)),
-                  ),
-                  const CupertinoListTile(title: Text("Email")),
-                  const CupertinoListTile(title: Text("Etc")),
-                ],
-              ),
-            ],
-          ));
+                const CupertinoListTile(title: Text("Email")),
+                const CupertinoListTile(title: Text("Etc")),
+              ],
+            ),
+            const Spacer(),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Visibility(
+                  visible: isEditing,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                    child: CupertinoTextField(
+                      controller: controller,
+                      suffix: IconButton(
+                        icon: const Icon(CupertinoIcons.floppy_disk),
+                        onPressed: () {
+                          widget.handleUsername(controller.text);
+                        },
+                      ),
+                    ),
+                  )),
+            )
+          ],
+        )),
+      );
     } else {
       return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(

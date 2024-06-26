@@ -170,7 +170,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-      initialRoute: '/',
+      initialRoute: '/login',
       routes: {
         '/settings': (context) => SettingsWidget(
               currentTheme: currentTheme,
@@ -190,6 +190,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         '/profile': (context) => ProfileWidget(
               userLoggedIn: userLoggedIn,
               username: username,
+              handleUsername: (String newUsername) {
+                setState(() {
+                  username = newUsername;
+                });
+              },
             )
       },
       home: Home(

@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LoginWidget extends StatefulWidget {
-  const LoginWidget({super.key, required this.handleLoggedIn, required this.handleUsername});
+  const LoginWidget(
+      {super.key, required this.handleLoggedIn, required this.handleUsername});
 
   final void Function(bool isSignedIn) handleLoggedIn;
   final Function(String) handleUsername;
@@ -23,10 +24,6 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-          leading: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(CupertinoIcons.left_chevron))),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 200, horizontal: 100),
         child: Column(
