@@ -6,11 +6,13 @@ class ProfileWidget extends StatefulWidget {
       {super.key,
       required this.userLoggedIn,
       required this.username,
-      required this.handleUsername});
+      required this.handleUserInfo,
+      required this.photoUrl});
 
   final bool userLoggedIn;
   final String username;
-  final Function(String) handleUsername;
+  final String photoUrl;
+  final Function(String) handleUserInfo;
 
   @override
   State<ProfileWidget> createState() => _ProfileWidgetState();
@@ -42,8 +44,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         child: SafeArea(
             child: Column(
           children: [
-            Image.asset(
-              'assets/images/defaultProfilePic.webp',
+            Image.network(
+              widget.photoUrl,
               height: 160,
               width: 160,
             ),
@@ -81,7 +83,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       suffix: IconButton(
                         icon: const Icon(CupertinoIcons.floppy_disk),
                         onPressed: () {
-                          widget.handleUsername(controller.text);
+                          widget.handleUserInfo(controller.text);
                           isEditing = false;
                         },
                       ),

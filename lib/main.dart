@@ -176,6 +176,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   String username = "User";
+  String photoUrl = "https://www.vecteezy.com/vector-art/27708418-default-avatar-profile-icon-vector-in-flat-style";
 
   @override
   Widget build(BuildContext context) {
@@ -189,18 +190,20 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             ),
         '/login': (context) => LoginWidget(
               handleLoggedIn: handleLoggedIn,
-              handleUsername: (String newUsername) {
+              handleUserInfo: (String newUsername, String newPhotoUrl) {
                 setState(
                   () {
                     username = newUsername;
+                    photoUrl = newPhotoUrl;
                   },
                 );
               },
             ),
         '/profile': (context) => ProfileWidget(
+              photoUrl: photoUrl,
               userLoggedIn: userLoggedIn,
               username: username,
-              handleUsername: (String newUsername) {
+              handleUserInfo: (String newUsername) {
                 setState(() {
                   username = newUsername;
                 });
@@ -217,6 +220,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         tasksDB: widget.getTasks,
         username: username,
         handleLoggedIn: handleLoggedIn,
+        photoUrl: photoUrl,
       ),
       debugShowCheckedModeBanner: false,
       theme: currentTheme,

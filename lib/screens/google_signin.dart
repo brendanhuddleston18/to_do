@@ -34,7 +34,6 @@ Future<void> nativeGoogleSignIn(
     accessToken: accessToken,
   );
 
-
   handleLoginAction(
       googleUser.displayName, googleUser.photoUrl, googleUser.email);
 }

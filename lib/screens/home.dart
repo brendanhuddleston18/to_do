@@ -24,7 +24,8 @@ class Home extends StatefulWidget {
       required this.currentTheme,
       required this.isLoggedIn,
       required this.username,
-      required this.handleLoggedIn});
+      required this.handleLoggedIn,
+      required this.photoUrl});
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
@@ -37,6 +38,7 @@ class Home extends StatefulWidget {
   final CupertinoThemeData currentTheme;
 
   final String username;
+  final String photoUrl;
   @override
   State<Home> createState() => _HomeWidgetState();
 }
@@ -75,6 +77,7 @@ class _HomeWidgetState extends State<Home> {
           isLoggedIn: widget.isLoggedIn,
           username: widget.username,
           handleLoggedIn: widget.handleLoggedIn,
+          photoUrl: widget.photoUrl,
         ),
       ),
       child: Stack(

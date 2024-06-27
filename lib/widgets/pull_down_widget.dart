@@ -8,11 +8,13 @@ class PullDownMenu extends StatefulWidget {
       required this.builder,
       required this.isLoggedIn,
       required this.username,
-      required this.handleLoggedIn});
+      required this.handleLoggedIn, 
+      required this.photoUrl});
 
   final PullDownMenuButtonBuilder builder;
   final bool isLoggedIn;
   final String username;
+  final String photoUrl;
   final Function(bool isSignedIn) handleLoggedIn;
 
   @override
@@ -54,7 +56,7 @@ class _PullDownMenuState extends State<PullDownMenu> {
         itemBuilder: (context) {
           return [
             PullDownMenuHeader(
-              leading: Image.asset('./assets/images/defaultProfilePic.webp'),
+              leading: Image.network(widget.photoUrl),
               title: widget.username,
               subtitle: "Tap to open",
               onTap: () {
