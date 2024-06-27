@@ -7,6 +7,8 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:to_do/models/task_model.dart';
 import 'package:to_do/screens/settings.dart';
+import 'package:to_do/screens/login.dart';
+import 'package:to_do/screens/profile.dart';
 import 'package:to_do/themes/dark_theme.dart';
 import 'package:to_do/themes/light_theme.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -152,24 +154,59 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
   }
 
+  bool userLoggedIn = false;
+
+  void handleLoggedIn(bool isSignedIn) {
+    userLoggedIn = isSignedIn;
+    if (!isSignedIn) {
+      setState(() {
+        username = "User";
+      });
+    }
+  }
+
+  String username = "User";
+
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-      initialRoute: '/',
+      initialRoute: '/login',
       routes: {
         '/settings': (context) => SettingsWidget(
               currentTheme: currentTheme,
               handleDarkMode: handleDarkMode,
               handleDarkSwitch: handleDarkSwitch,
             ),
+        '/login': (context) => LoginWidget(
+              handleLoggedIn: handleLoggedIn,
+              handleUsername: (String newUsername) {
+                setState(
+                  () {
+                    username = newUsername;
+                  },
+                );
+              },
+            ),
+        '/profile': (context) => ProfileWidget(
+              userLoggedIn: userLoggedIn,
+              username: username,
+              handleUsername: (String newUsername) {
+                setState(() {
+                  username = newUsername;
+                });
+              },
+            )
       },
       home: Home(
+        isLoggedIn: userLoggedIn,
         currentTheme: currentTheme,
         insertTask: widget.insertTask,
         deleteTask: widget.deleteTask,
         updateTask: widget.updateTask,
         handleDarkMode: handleDarkMode,
         tasksDB: widget.getTasks,
+        username: username,
+        handleLoggedIn: handleLoggedIn,
       ),
       debugShowCheckedModeBanner: false,
       theme: currentTheme,

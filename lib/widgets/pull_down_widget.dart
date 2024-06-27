@@ -2,27 +2,51 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
-class SidePanelWidget extends StatefulWidget {
-  const SidePanelWidget({super.key});
-
-  @override
-  State<SidePanelWidget> createState() => _SidePanelWidgetState();
-}
-
-class _SidePanelWidgetState extends State<SidePanelWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-        onPressed: () {}, icon: const Icon(CupertinoIcons.ellipsis));
-  }
-}
-
-// -------------------------------------//
-
-class PullDownMenu extends StatelessWidget {
-  const PullDownMenu({super.key, required this.builder});
+class PullDownMenu extends StatefulWidget {
+  const PullDownMenu(
+      {super.key,
+      required this.builder,
+      required this.isLoggedIn,
+      required this.username,
+      required this.handleLoggedIn});
 
   final PullDownMenuButtonBuilder builder;
+  final bool isLoggedIn;
+  final String username;
+  final Function(bool isSignedIn) handleLoggedIn;
+
+  @override
+  State<PullDownMenu> createState() => _PullDownMenuState();
+}
+
+class _PullDownMenuState extends State<PullDownMenu> {
+  String signInOrSignOut = 'Sign in';
+
+  @override
+  void initState() {
+    super.initState();
+    handleLoggedIn();
+  }
+
+  @override
+  void didUpdateWidget(covariant PullDownMenu oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isLoggedIn != widget.isLoggedIn) {
+      handleLoggedIn();
+    }
+  }
+
+  void handleLoggedIn() {
+    if (widget.isLoggedIn) {
+      setState(() {
+        signInOrSignOut = 'Sign out';
+      });
+    } else {
+      setState(() {
+        signInOrSignOut = 'Sign In';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +54,12 @@ class PullDownMenu extends StatelessWidget {
         itemBuilder: (context) {
           return [
             PullDownMenuHeader(
-              leading: ColoredBox(
-                color: CupertinoColors.systemBlue.resolveFrom(context),
-              ),
-              title: "Profile",
+              leading: Image.asset('./assets/images/defaultProfilePic.webp'),
+              title: widget.username,
               subtitle: "Tap to open",
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/profile');
+              },
               icon: CupertinoIcons.profile_circled,
             ),
             const PullDownMenuDivider.large(),
@@ -62,33 +86,19 @@ class PullDownMenu extends StatelessWidget {
                 onTap: () {}, title: "About", icon: CupertinoIcons.book),
             const PullDownMenuDivider.large(),
             PullDownMenuItem(
-              onTap: () {},
-              title: "Sign out",
+              onTap: () {
+                if (!widget.isLoggedIn) {
+                  Navigator.pushNamed(context, '/login');
+                } else {
+                  Navigator.pushNamed(context, '/login');
+                }
+              },
+              title: signInOrSignOut,
               icon: CupertinoIcons.device_phone_portrait,
               isDestructive: true,
             )
           ];
         },
-        buttonBuilder: builder);
+        buttonBuilder: widget.builder);
   }
 }
-
-// class PullDownMenu extends StatefulWidget {
-//   const PullDownMenu({super.key, required this.builder});
-
-
-
-//   @override
-//   State<PullDownMenu> createState() => _PullDownMenuState();
-// }
-
-// class _PullDownMenuState extends State<PullDownMenu> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return PullDownButton(itemBuilder: (context){
-//       return [PullDownMenuHeader(leading: ColoredBox(
-//               color: CupertinoColors.systemBlue.resolveFrom(context),
-//             ), title: "Profile")];
-//     }, buttonBuilder: buttonBuilder);
-//   }
-// }

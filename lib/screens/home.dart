@@ -14,24 +14,29 @@ import 'package:to_do/models/task_model.dart';
 import 'package:to_do/widgets/pull_down_widget.dart';
 
 class Home extends StatefulWidget {
-  const Home({
-    super.key,
-    required this.insertTask,
-    required this.tasksDB,
-    required this.deleteTask,
-    required this.updateTask,
-    required this.handleDarkMode,
-    required this.currentTheme,
-  });
+  const Home(
+      {super.key,
+      required this.insertTask,
+      required this.tasksDB,
+      required this.deleteTask,
+      required this.updateTask,
+      required this.handleDarkMode,
+      required this.currentTheme,
+      required this.isLoggedIn,
+      required this.username,
+      required this.handleLoggedIn});
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
   final Future<void> Function(Task task) updateTask;
+  final void Function(bool isSignedIn) handleLoggedIn;
 
   final void Function(bool isOn) handleDarkMode;
+  final bool isLoggedIn;
   final Future<List<Task>> Function() tasksDB;
   final CupertinoThemeData currentTheme;
 
+  final String username;
   @override
   State<Home> createState() => _HomeWidgetState();
 }
@@ -57,15 +62,20 @@ class _HomeWidgetState extends State<Home> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: widget.currentTheme.primaryContrastingColor,
-        middle: const Text("Brendan's To Do List"),
-        trailing: PullDownMenu(builder: (_, showMenu) {
-          return CupertinoButton(
-            onPressed: showMenu,
-            padding: EdgeInsets.zero,
-            pressedOpacity: 1,
-            child: const Icon(CupertinoIcons.ellipsis),
-          );
-        }),
+        middle: Text("${widget.username}'s To Do List"),
+        trailing: PullDownMenu(
+          builder: (_, showMenu) {
+            return CupertinoButton(
+              onPressed: showMenu,
+              padding: EdgeInsets.zero,
+              pressedOpacity: 1,
+              child: const Icon(CupertinoIcons.ellipsis),
+            );
+          },
+          isLoggedIn: widget.isLoggedIn,
+          username: widget.username,
+          handleLoggedIn: widget.handleLoggedIn,
+        ),
       ),
       child: Stack(
         children: [
