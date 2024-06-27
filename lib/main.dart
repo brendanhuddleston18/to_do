@@ -12,9 +12,19 @@ import 'package:to_do/screens/profile.dart';
 import 'package:to_do/themes/dark_theme.dart';
 import 'package:to_do/themes/light_theme.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+  String url = dotenv.env['url']!;
+  String anonKey = dotenv.env['anonKey']!;
+
+  await Supabase.initialize(
+    url: url,
+    anonKey: anonKey,
+  );
 
   final database = openDatabase(
     join(await getDatabasesPath(), 'tasks_database.db'),

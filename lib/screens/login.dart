@@ -14,10 +14,10 @@ class LoginWidget extends StatefulWidget {
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
-  void handleLoginAction() {
+  void handleLoginAction(String? username, String? photoUrl, String? email) {
     widget.handleLoggedIn(true);
     Navigator.popUntil(context, ModalRoute.withName('/'));
-    widget.handleUsername(controller.text);
+    widget.handleUsername(username!);
   }
 
   TextEditingController controller = TextEditingController();
@@ -36,8 +36,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             CupertinoButton(
                 onPressed: () {
                   setState(() {
-                    handleLoginAction();
-                    nativeGoogleSignIn();
+                    nativeGoogleSignIn(handleLoginAction);
                   });
                 },
                 child: const Text("Login"))

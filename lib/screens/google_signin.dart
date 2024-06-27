@@ -3,16 +3,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final supabase = Supabase.instance.client;
 
-Future<void> nativeGoogleSignIn() async {
-  /// TODO: update the Web client ID with your own.
-  ///
-  /// Web Client ID that you registered with Google Cloud.
+Future<void> nativeGoogleSignIn(
+    void Function(String? username, String? photoUrl, String? email)
+        handleLoginAction) async {
   const webClientId =
       '383717383782-6r4gtlqdl2tg6d2teja8vqia4bbivnjp.apps.googleusercontent.com';
 
-  /// TODO: update the iOS client ID with your own.
-  ///
-  /// iOS Client ID that you registered with Google Cloud.
   const iosClientId =
       '383717383782-8869kngglrhopbo9kv4sg4268r306qq3.apps.googleusercontent.com';
 
@@ -37,4 +33,8 @@ Future<void> nativeGoogleSignIn() async {
     idToken: idToken,
     accessToken: accessToken,
   );
+
+
+  handleLoginAction(
+      googleUser.displayName, googleUser.photoUrl, googleUser.email);
 }
