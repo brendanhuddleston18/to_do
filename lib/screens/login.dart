@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:to_do/screens/google_signin.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget(
@@ -36,6 +37,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 onPressed: () {
                   setState(() {
                     handleLoginAction();
+                    nativeGoogleSignIn();
                   });
                 },
                 child: const Text("Login"))
