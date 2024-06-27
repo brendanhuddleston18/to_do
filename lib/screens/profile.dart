@@ -56,40 +56,11 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               children: [
                 CupertinoListTile(
                   title: Text(widget.username),
-                  trailing: IconButton(
-                      onPressed: () {
-                        setState(
-                          () {
-                            handleEditing();
-                          },
-                        );
-                      },
-                      icon: const Icon(CupertinoIcons.pencil_circle)),
                 ),
                 const CupertinoListTile(title: Text("Email")),
                 const CupertinoListTile(title: Text("Etc")),
               ],
             ),
-            const Spacer(),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Visibility(
-                  visible: isEditing,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                    child: CupertinoTextField(
-                      controller: controller,
-                      suffix: IconButton(
-                        icon: const Icon(CupertinoIcons.floppy_disk),
-                        onPressed: () {
-                          widget.handleUserInfo(controller.text);
-                          isEditing = false;
-                        },
-                      ),
-                    ),
-                  )),
-            )
           ],
         )),
       );
