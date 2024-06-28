@@ -21,6 +21,8 @@ Future<void> nativeGoogleSignIn(
   final accessToken = googleAuth.accessToken;
   final idToken = googleAuth.idToken;
 
+  
+
   if (accessToken == null) {
     throw 'No Access Token found.';
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:to_do/globals.dart';
 import 'package:to_do/notifications/notification_controller.dart';
 import 'package:to_do/screens/home.dart';
@@ -26,6 +27,10 @@ void main() async {
     anonKey: anonKey,
   );
 
+  final supabase = Supabase.instance.client;
+
+  final User? user = supabase.auth.currentUser;
+
   final database = openDatabase(
     join(await getDatabasesPath(), 'tasks_database.db'),
     onCreate: (db, version) {
@@ -42,30 +47,45 @@ void main() async {
   );
 
   Future<void> insertTask(Task task) async {
-    final db = await database;
+    await supabase.from('user_tasks').insert({
+      'user_id': user?.id,
+      'task_text': task.taskText,
+      'description': task.description,
+      'time_created': task.timeCreated,
+      'reminder_date': task.reminderDate,
+      'task_id': task.id,
+    });
+    // final db = await database;
 
-    await db.insert(
-      'tasksV7',
-      task.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    // await db.insert(
+    //   'tasksV7',
+    //   task.toMap(),
+    //   conflictAlgorithm: ConflictAlgorithm.replace,
+    // );
   }
 
   Future<void> deleteTask(String id) async {
-    final db = await database;
+    await supabase.from('user_tasks').delete().eq('task_id', id);
+    // final db = await database;
 
-    await db.delete(
-      'tasksV7',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    // await db.delete(
+    //   'tasksV7',
+    //   where: 'id = ?',
+    //   whereArgs: [id],
+    // );
   }
 
   Future<void> updateTask(Task task) async {
-    final db = await database;
+    await supabase.from('user_tasks').update({
+      'task_text': task.taskText,
+      'description': task.description,
+      'time_created': task.timeCreated,
+      'reminder_date': task.reminderDate
+    }).eq('task_id', task.id);
+    // final db = await database;
 
-    await db
-        .update('tasksV7', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
+    // await db
+    //     .update('tasksV7', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
   }
 
   Future<List<Task>> getTasks() async {
@@ -176,7 +196,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   String username = "User";
-  String photoUrl = "https://www.vecteezy.com/vector-art/27708418-default-avatar-profile-icon-vector-in-flat-style";
+  String photoUrl =
+      "https://www.vecteezy.com/vector-art/27708418-default-avatar-profile-icon-vector-in-flat-style";
 
   @override
   Widget build(BuildContext context) {
