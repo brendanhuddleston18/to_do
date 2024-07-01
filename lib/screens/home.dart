@@ -96,7 +96,6 @@ class _HomeWidgetState extends State<Home> {
                       selectionColor: Colors.blue,
                     ),
                     children: tasks.map<Widget>((dynamic task) {
-                      print("task, $task");
                       // return const CupertinoListTile(title: Text("Hi"));
                       return CupertinoListTile(
                         key: ValueKey(task['task_id']),
