@@ -126,8 +126,8 @@ class InfoAlertDialog extends StatefulWidget {
     required this.updateTask,
   });
 
-  final Task taskData;
-  final Future<void> Function(Task task) updateTask;
+  final Map taskData;
+  final Future<void> Function(Map task) updateTask;
 
   @override
   State<InfoAlertDialog> createState() => _InfoAlertDialogState();
@@ -141,8 +141,8 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
   @override
   void initState() {
     super.initState();
-    taskInfo = widget.taskData.description;
-    reminderDate = widget.taskData.reminderDate;
+    taskInfo = widget.taskData["description"];
+    reminderDate = widget.taskData["reminder_date"];
   }
 
   void handleUpdateTaskInfo(String updatedInfo) {
@@ -151,7 +151,7 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
       isEditing = false;
     });
 
-    widget.taskData.description = taskInfo;
+    widget.taskData["description"] = taskInfo;
     widget.updateTask(widget.taskData);
   }
 
@@ -161,7 +161,7 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
         reminderDate = DateFormat('dd-MMM-yyyy - kk:mm').format(timeToShow);
       },
     );
-    widget.taskData.reminderDate = reminderDate;
+    widget.taskData["reminder_date"] = reminderDate;
     widget.updateTask(widget.taskData);
     AwesomeNotifications().createNotification(
         actionButtons: [
@@ -169,11 +169,11 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
           NotificationActionButton(key: 'delete', label: 'Delete task')
         ],
         content: NotificationContent(
-            payload: {"taskID": widget.taskData.id},
-            id: widget.taskData.id.hashCode,
+            payload: {"taskID": widget.taskData["task_id"]},
+            id: widget.taskData["task_id"].hashCode,
             channelKey: "basic_channel",
-            title: widget.taskData.taskText,
-            body: widget.taskData.description),
+            title: widget.taskData["task_text"],
+            body: widget.taskData["description"]),
         schedule: NotificationCalendar.fromDate(date: timeToShow));
   }
 
@@ -183,7 +183,7 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(widget.taskData.taskText),
+          Text(widget.taskData["task_text"]),
           ReminderButton(
             handleReminder: handleReminder,
           )

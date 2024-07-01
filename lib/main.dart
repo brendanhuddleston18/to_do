@@ -76,22 +76,22 @@ void main() async {
     // );
   }
 
-  Future<void> updateTask(Task task) async {
+  Future<void> updateTask(Map task) async {
     await supabase.from('user_tasks').update({
-      'task_text': task.taskText,
-      'description': task.description,
-      'time_created': task.timeCreated,
-      'reminder_date': task.reminderDate
-    }).eq('task_id', task.id);
+      'task_text': task["task_text"],
+      'description': task["description"],
+      'time_created': task["time_created"],
+      'reminder_date': task["reminder_date"]
+    }).eq('task_id', task["task_id"]);
     // final db = await database;
 
     // await db
     //     .update('tasksV7', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
   }
 
-  Future<List<Task>> getTasks() async {
-
-    final data = await supabase.from('user_tasks').select().eq('user_id', user!.id);
+  Future<List<Map>> getTasks() async {
+    final data =
+        await supabase.from('user_tasks').select().eq('user_id', user!.id);
 
     // TODO: figure out how to return the data in order to render each task on screen
     // final db = await database;
@@ -99,14 +99,15 @@ void main() async {
     // final List<Map<String, Object?>> taskMaps = await db.query('tasksV7');
 
     // return taskMaps.map((taskMap) {
-    //   return Task(
-    //     id: taskMap['id'] as String,
-    //     taskText: taskMap['task'] as String,
-    //     description: taskMap['description'] as String,
-    //     timeCreated: taskMap['timeCreated'] as String,
-    //     reminderDate: taskMap['reminderDate'] as String,
-    //   );
+      // return Task(
+      //   id: taskMap['id'] as String,
+      //   taskText: taskMap['task'] as String,
+      //   description: taskMap['description'] as String,
+      //   timeCreated: taskMap['timeCreated'] as String,
+      //   reminderDate: taskMap['reminderDate'] as String,
+      // );
     // }).toList();
+  return data;
   }
 
   globalDeleteTask = deleteTask;
@@ -145,8 +146,8 @@ class MyApp extends StatefulWidget {
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
-  final Future<void> Function(Task task) updateTask;
-  final Future<List<Task>> Function() getTasks;
+  final Future<void> Function(Map task) updateTask;
+  final Future<List<Map>> Function() getTasks;
 
   @override
   State<MyApp> createState() => _MyAppState();
