@@ -1,7 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:to_do/models/task_model.dart';
 import 'package:intl/intl.dart';
 
 class InfoDisplayButtonWidget extends StatefulWidget {

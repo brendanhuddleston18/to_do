@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:to_do/globals.dart';
 import 'package:to_do/notifications/notification_controller.dart';
 import 'package:to_do/screens/home.dart';
 import 'dart:async';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:to_do/models/task_model.dart';
 import 'package:to_do/screens/settings.dart';
 import 'package:to_do/screens/login.dart';
@@ -17,7 +14,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
-  // TODO: Make sure this even works
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   String url = dotenv.env['url']!;
@@ -32,21 +28,6 @@ void main() async {
 
   final User? user = supabase.auth.currentUser;
 
-  // final database = openDatabase(
-  //   join(await getDatabasesPath(), 'tasks_database.db'),
-  //   onCreate: (db, version) {
-  //     return db.execute(
-  //         'CREATE TABLE tasksV7(id TEXT, task TEXT, description TEXT, timeCreated TEXT, reminderDate TEXT)');
-  //   },
-  //   onUpgrade: (db, oldVersion, newVersion) {
-  //     if (newVersion == 7) {
-  //       db.execute(
-  //           'CREATE TABLE tasksV7(id TEXT, task TEXT, description TEXT, timeCreated TEXT, reminderDate TEXT)');
-  //     }
-  //   },
-  //   version: 7,
-  // );
-
   Future<void> insertTask(Task task) async {
     await supabase.from('user_tasks').insert({
       'user_id': user?.id,
@@ -56,24 +37,10 @@ void main() async {
       'reminder_date': task.reminderDate,
       'task_id': task.id,
     });
-    // final db = await database;
-
-    // await db.insert(
-    //   'tasksV7',
-    //   task.toMap(),
-    //   conflictAlgorithm: ConflictAlgorithm.replace,
-    // );
   }
 
   Future<void> deleteTask(String id) async {
     await supabase.from('user_tasks').delete().eq('task_id', id);
-    // final db = await database;
-
-    // await db.delete(
-    //   'tasksV7',
-    //   where: 'id = ?',
-    //   whereArgs: [id],
-    // );
   }
 
   Future<void> updateTask(Map task) async {
@@ -83,31 +50,12 @@ void main() async {
       'time_created': task["time_created"],
       'reminder_date': task["reminder_date"]
     }).eq('task_id', task["task_id"]);
-    // final db = await database;
-
-    // await db
-    //     .update('tasksV7', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
   }
 
   Future<List<Map>> getTasks() async {
     final data =
         await supabase.from('user_tasks').select().eq('user_id', user!.id);
-
-    // TODO: figure out how to return the data in order to render each task on screen
-    // final db = await database;
-
-    // final List<Map<String, Object?>> taskMaps = await db.query('tasksV7');
-
-    // return taskMaps.map((taskMap) {
-      // return Task(
-      //   id: taskMap['id'] as String,
-      //   taskText: taskMap['task'] as String,
-      //   description: taskMap['description'] as String,
-      //   timeCreated: taskMap['timeCreated'] as String,
-      //   reminderDate: taskMap['reminderDate'] as String,
-      // );
-    // }).toList();
-  return data;
+    return data;
   }
 
   globalDeleteTask = deleteTask;
