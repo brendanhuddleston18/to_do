@@ -26,11 +26,19 @@ void main() async {
 
   final supabase = Supabase.instance.client;
 
-  final User? user = supabase.auth.currentUser;
+  User _authenticateUser() {
+    final User? user = supabase.auth.currentUser;
+    if (user == null) {
+      throw Exception("Pooped in my pants");
+    }
+    return user;
+  }
 
   Future<void> insertTask(Task task) async {
+    User user = _authenticateUser();
+
     await supabase.from('user_tasks').insert({
-      'user_id': user?.id,
+      'user_id': user.id,
       'task_text': task.taskText,
       'description': task.description,
       'time_created': task.timeCreated,
@@ -53,8 +61,11 @@ void main() async {
   }
 
   Future<List<Map>> getTasks() async {
+    User user = _authenticateUser();
+    print(user);
+
     final data =
-        await supabase.from('user_tasks').select().eq('user_id', user!.id);
+        await supabase.from('user_tasks').select().eq('user_id', user.id);
     return data;
   }
 
@@ -75,6 +86,7 @@ void main() async {
   if (!isAllowedToSendNotification) {
     AwesomeNotifications().requestPermissionToSendNotifications();
   }
+
   runApp(MyApp(
     insertTask: insertTask,
     deleteTask: deleteTask,
@@ -153,10 +165,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   String photoUrl =
       "https://www.vecteezy.com/vector-art/27708418-default-avatar-profile-icon-vector-in-flat-style";
 
+  String handleInitialRoute() {
+    String initialRoute = "/";
+    final supabase = Supabase.instance.client;
+    final User? user = supabase.auth.currentUser;
+    if (user == null) {
+      return initialRoute = "/login";
+    }
+    return initialRoute;
+  }
+  // TODO: Listen to Auth events based on if user is anything other than SignedIn
+
   @override
   Widget build(BuildContext context) {
+    print("texty text");
     return CupertinoApp(
-      initialRoute: '/login',
+      initialRoute: "/",
       routes: {
         '/settings': (context) => SettingsWidget(
               currentTheme: currentTheme,
