@@ -165,14 +165,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   String photoUrl =
       "https://www.vecteezy.com/vector-art/27708418-default-avatar-profile-icon-vector-in-flat-style";
 
-  String handleInitialRoute() {
-    String initialRoute = "/";
+  void handleUserInfo() {
     final supabase = Supabase.instance.client;
     final User? user = supabase.auth.currentUser;
-    if (user == null) {
-      return initialRoute = "/login";
+
+    if (user != null) {
+      username = user.userMetadata?["full_name"];
+      photoUrl = user.userMetadata?["avatar_url"];
     }
-    return initialRoute;
   }
   // TODO: Listen to Auth events based on if user is anything other than SignedIn
 
