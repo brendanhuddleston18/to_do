@@ -15,7 +15,6 @@ class LoginWidget extends StatefulWidget {
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
-  // TODO: Make username and PhotoURL global
   void handleLoginAction(String? username, String? photoUrl, String? email) {
     widget.handleLoggedIn(true);
     Navigator.popUntil(context, ModalRoute.withName('/'));

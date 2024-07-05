@@ -62,7 +62,6 @@ void main() async {
 
   Future<List<Map>> getTasks() async {
     User user = _authenticateUser();
-    print(user);
 
     final data =
         await supabase.from('user_tasks').select().eq('user_id', user.id);
@@ -165,6 +164,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   String photoUrl =
       "https://www.vecteezy.com/vector-art/27708418-default-avatar-profile-icon-vector-in-flat-style";
 
+  String initialRoute = "/login";
+
   void handleUserInfo() {
     final supabase = Supabase.instance.client;
     final User? user = supabase.auth.currentUser;
@@ -172,15 +173,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (user != null) {
       username = user.userMetadata?["full_name"];
       photoUrl = user.userMetadata?["avatar_url"];
+      initialRoute = "/";
+      userLoggedIn = true;
     }
   }
-  // TODO: Listen to Auth events based on if user is anything other than SignedIn
+
+  // TODO: Create signout function for google
+  // TODO: Why aren't tasks fetching when added?
 
   @override
   Widget build(BuildContext context) {
-    print("texty text");
+    handleUserInfo();
     return CupertinoApp(
-      initialRoute: "/",
+      initialRoute: initialRoute,
       routes: {
         '/settings': (context) => SettingsWidget(
               currentTheme: currentTheme,
