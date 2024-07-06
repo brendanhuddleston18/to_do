@@ -2,7 +2,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final supabase = Supabase.instance.client;
-// TODO: Make login persistent so I don't have to keep signing in with google
 
 Future<void> nativeGoogleSignIn(
     void Function(String? username, String? photoUrl, String? email)

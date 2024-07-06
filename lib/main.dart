@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:to_do/globals.dart';
 import 'package:to_do/notifications/notification_controller.dart';
+import 'package:to_do/screens/google_signin.dart';
 import 'package:to_do/screens/home.dart';
 import 'dart:async';
 import 'package:to_do/models/task_model.dart';
@@ -177,9 +178,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       userLoggedIn = true;
     }
   }
-
-  // TODO: Create signout function for google
-  // TODO: Why aren't tasks fetching when added?
+  // TODO: Keep an eye on if tasks generate after creation or not
 
   @override
   Widget build(BuildContext context) {
