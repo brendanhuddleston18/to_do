@@ -20,8 +20,8 @@ class NotificationController {
       ReceivedAction receivedAction) async {
     if (receivedAction.buttonKeyPressed == 'viewTask') {
       if (receivedAction.payload?['taskID'] != null) {
-        String taskToView = receivedAction.payload!['taskID']!;
-        print('viewing task $taskToView');
+       
+        
       }
     } else if (receivedAction.buttonKeyPressed == 'delete') {
       if (receivedAction.payload?['taskID'] != null) {

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:pull_down_button/pull_down_button.dart';
+import 'package:to_do/screens/google_signin.dart';
 
 class PullDownMenu extends StatefulWidget {
   const PullDownMenu(
@@ -8,11 +8,13 @@ class PullDownMenu extends StatefulWidget {
       required this.builder,
       required this.isLoggedIn,
       required this.username,
-      required this.handleLoggedIn});
+      required this.handleLoggedIn,
+      required this.photoUrl});
 
   final PullDownMenuButtonBuilder builder;
   final bool isLoggedIn;
   final String username;
+  final String photoUrl;
   final Function(bool isSignedIn) handleLoggedIn;
 
   @override
@@ -25,27 +27,10 @@ class _PullDownMenuState extends State<PullDownMenu> {
   @override
   void initState() {
     super.initState();
-    handleLoggedIn();
   }
 
-  @override
-  void didUpdateWidget(covariant PullDownMenu oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.isLoggedIn != widget.isLoggedIn) {
-      handleLoggedIn();
-    }
-  }
-
-  void handleLoggedIn() {
-    if (widget.isLoggedIn) {
-      setState(() {
-        signInOrSignOut = 'Sign out';
-      });
-    } else {
-      setState(() {
-        signInOrSignOut = 'Sign In';
-      });
-    }
+  Future<void> signOut() async {
+    await supabase.auth.signOut();
   }
 
   @override
@@ -54,7 +39,7 @@ class _PullDownMenuState extends State<PullDownMenu> {
         itemBuilder: (context) {
           return [
             PullDownMenuHeader(
-              leading: Image.asset('./assets/images/defaultProfilePic.webp'),
+              leading: Image.network(widget.photoUrl),
               title: widget.username,
               subtitle: "Tap to open",
               onTap: () {
@@ -87,13 +72,10 @@ class _PullDownMenuState extends State<PullDownMenu> {
             const PullDownMenuDivider.large(),
             PullDownMenuItem(
               onTap: () {
-                if (!widget.isLoggedIn) {
-                  Navigator.pushNamed(context, '/login');
-                } else {
-                  Navigator.pushNamed(context, '/login');
-                }
+                signOut();
+                Navigator.pushNamed(context, '/login');
               },
-              title: signInOrSignOut,
+              title: "Sign out",
               icon: CupertinoIcons.device_phone_portrait,
               isDestructive: true,
             )
