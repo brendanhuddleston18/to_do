@@ -26,28 +26,63 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        backgroundColor: Colors.white70,
+        // backgroundColor: Colors.white70,
         child: SafeArea(
-          minimum: const EdgeInsets.symmetric(horizontal: 50, vertical: 200),
-          child: Container(
-            width: 400,
-            height: 600,
+      minimum: const EdgeInsets.symmetric(horizontal: 50, vertical: 200),
+      child: Container(
+        decoration: BoxDecoration(
             color: Colors.white,
-            child: Column(
-              children: [
-                const Text("Please use Google to Log In"),
-                CupertinoButton(
-                    child: Image.asset(
-                      'assets/images/googleSignIn.png',
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        nativeGoogleSignIn(handleLoginAction);
-                      });
-                    })
-              ],
+            boxShadow: List.filled(
+                3,
+                const BoxShadow(
+                  color: Color.fromARGB(17, 80, 80, 80),
+                  spreadRadius: 6,
+                  blurRadius: 16,
+                ))),
+        width: 400,
+        height: 600,
+        child: Column(
+          children: [
+            const SafeArea(
+              minimum: EdgeInsets.only(top: 32),
+              child: Text(
+                "TaskTango",
+                style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-        ));
+            Align(
+                alignment: Alignment.center,
+                child: Column(
+                  children: [
+                    const Text(
+                      "Please use Google to login",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    CupertinoButton(
+                        child: Image.asset(
+                          'assets/images/googleSignIn.png',
+                          width: 200,
+                          height: 150,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            nativeGoogleSignIn(handleLoginAction);
+                          });
+                        }),
+                  ],
+                )),
+            const SafeArea(
+                minimum: EdgeInsets.only(top: 60),
+                child: Divider(
+                  indent: 40,
+                  endIndent: 40,
+                )),
+          ],
+        ),
+      ),
+    ));
   }
 }
