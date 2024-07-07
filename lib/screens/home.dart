@@ -2,7 +2,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 
 // --------My Widgets---------------//
@@ -14,24 +13,31 @@ import 'package:to_do/models/task_model.dart';
 import 'package:to_do/widgets/pull_down_widget.dart';
 
 class Home extends StatefulWidget {
-  const Home({
-    super.key,
-    required this.insertTask,
-    required this.tasksDB,
-    required this.deleteTask,
-    required this.updateTask,
-    required this.handleDarkMode,
-    required this.currentTheme,
-  });
+  const Home(
+      {super.key,
+      required this.insertTask,
+      required this.tasksDB,
+      required this.deleteTask,
+      required this.updateTask,
+      required this.handleDarkMode,
+      required this.currentTheme,
+      required this.isLoggedIn,
+      required this.username,
+      required this.handleLoggedIn,
+      required this.photoUrl});
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
-  final Future<void> Function(Task task) updateTask;
+  final Future<void> Function(Map task) updateTask;
+  final void Function(bool isSignedIn) handleLoggedIn;
 
   final void Function(bool isOn) handleDarkMode;
-  final Future<List<Task>> Function() tasksDB;
+  final bool isLoggedIn;
+  final Future<List<Map>> Function() tasksDB;
   final CupertinoThemeData currentTheme;
 
+  final String username;
+  final String photoUrl;
   @override
   State<Home> createState() => _HomeWidgetState();
 }
@@ -39,7 +45,7 @@ class Home extends StatefulWidget {
 class _HomeWidgetState extends State<Home> {
   var uuid = const Uuid();
 
-  late Future<List<Task>> taskFuture;
+  late Future<List<Map>> taskFuture;
 
   @override
   void initState() {
@@ -47,7 +53,7 @@ class _HomeWidgetState extends State<Home> {
     taskFuture = _getTasks();
   }
 
-  Future<List<Task>> _getTasks() async {
+  Future<List<Map>> _getTasks() async {
     var fetchedTasks = await widget.tasksDB();
     return fetchedTasks;
   }
@@ -57,19 +63,25 @@ class _HomeWidgetState extends State<Home> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: widget.currentTheme.primaryContrastingColor,
-        middle: const Text("Brendan's To Do List"),
-        trailing: PullDownMenu(builder: (_, showMenu) {
-          return CupertinoButton(
-            onPressed: showMenu,
-            padding: EdgeInsets.zero,
-            pressedOpacity: 1,
-            child: const Icon(CupertinoIcons.ellipsis),
-          );
-        }),
+        middle: Text("${widget.username}'s To Do List"),
+        trailing: PullDownMenu(
+          builder: (_, showMenu) {
+            return CupertinoButton(
+              onPressed: showMenu,
+              padding: EdgeInsets.zero,
+              pressedOpacity: 1,
+              child: const Icon(CupertinoIcons.ellipsis),
+            );
+          },
+          isLoggedIn: widget.isLoggedIn,
+          username: widget.username,
+          handleLoggedIn: widget.handleLoggedIn,
+          photoUrl: widget.photoUrl,
+        ),
       ),
       child: Stack(
         children: [
-          FutureBuilder<List<Task>>(
+          FutureBuilder<List<Map>>(
               future: taskFuture,
               builder: ((BuildContext context, AsyncSnapshot snapshot) {
                 var tasks = snapshot.data ?? [];
@@ -81,53 +93,52 @@ class _HomeWidgetState extends State<Home> {
                       "My Reminders:",
                       selectionColor: Colors.blue,
                     ),
-                    children: tasks.map<Widget>((Task task) {
-                      return Animate(
-                          effects: const [],
-                          child: CupertinoListTile(
-                            key: ValueKey(task.id),
-                            leading: const CheckboxWidget(),
-                            title: Text(task.taskText),
-                            subtitle: Text(task.timeCreated),
-                            additionalInfo: InfoDisplayButtonWidget(
-                                information: task.taskText,
-                                showModal: (String info) {
-                                  showCupertinoModalPopup(
-                                      barrierDismissible: false,
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return Stack(
-                                          children: [
-                                            InfoAlertDialog(
-                                              taskData: task,
-                                              updateTask: widget.updateTask,
-                                            ),
-                                            Positioned(
-                                                right: 60,
-                                                top: 332,
-                                                child: ExitButton(
-                                                  onCloseModal: () {
-                                                    setState(() {
-                                                      taskFuture = _getTasks();
-                                                    });
-                                                  },
-                                                ))
-                                          ],
-                                        );
-                                      });
-                                }),
-                            trailing: DeleteWidget(
-                              onDeleteTask: widget.deleteTask,
-                              taskID: task.id,
-                              handleRefresh: () {
-                                setState(
-                                  () {
-                                    taskFuture = _getTasks();
-                                  },
-                                );
+                    children: tasks.map<Widget>((dynamic task) {
+                      // return const CupertinoListTile(title: Text("Hi"));
+                      return CupertinoListTile(
+                        key: ValueKey(task['task_id']),
+                        leading: const CheckboxWidget(),
+                        title: Text(task["task_text"]),
+                        subtitle: Text(task["time_created"]),
+                        additionalInfo: InfoDisplayButtonWidget(
+                            information: task["task_text"],
+                            showModal: (String info) {
+                              showCupertinoModalPopup(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Stack(
+                                      children: [
+                                        InfoAlertDialog(
+                                          taskData: task,
+                                          updateTask: widget.updateTask,
+                                        ),
+                                        Positioned(
+                                            right: 60,
+                                            top: 332,
+                                            child: ExitButton(
+                                              onCloseModal: () {
+                                                setState(() {
+                                                  taskFuture = _getTasks();
+                                                });
+                                              },
+                                            ))
+                                      ],
+                                    );
+                                  });
+                            }),
+                        trailing: DeleteWidget(
+                          onDeleteTask: widget.deleteTask,
+                          taskID: task["task_id"],
+                          handleRefresh: () {
+                            setState(
+                              () {
+                                taskFuture = _getTasks();
                               },
-                            ),
-                          ));
+                            );
+                          },
+                        ),
+                      );
                     }).toList(),
                   );
                 } else {
