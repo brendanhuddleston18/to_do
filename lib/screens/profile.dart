@@ -7,10 +7,12 @@ class ProfileWidget extends StatefulWidget {
       required this.userLoggedIn,
       required this.username,
       required this.handleUserInfo,
+      required this.email,
       required this.photoUrl});
 
   final bool userLoggedIn;
   final String username;
+  final String email;
   final String photoUrl;
   final Function(String) handleUserInfo;
 
@@ -57,7 +59,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 CupertinoListTile(
                   title: Text(widget.username),
                 ),
-                const CupertinoListTile(title: Text("Email")),
+                CupertinoListTile(title: Text(widget.email)),
                 const CupertinoListTile(title: Text("Etc")),
               ],
             ),

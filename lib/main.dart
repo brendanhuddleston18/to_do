@@ -163,6 +163,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   String username = "User";
   String photoUrl =
       "https://www.vecteezy.com/vector-art/27708418-default-avatar-profile-icon-vector-in-flat-style";
+  String email = "email";
 
   String initialRoute = "/login";
 
@@ -173,6 +174,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (user != null) {
       username = user.userMetadata?["full_name"];
       photoUrl = user.userMetadata?["avatar_url"];
+      email = user.userMetadata?["email"];
       initialRoute = "/";
       userLoggedIn = true;
     }
@@ -202,6 +204,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               },
             ),
         '/profile': (context) => ProfileWidget(
+              email: email,
               photoUrl: photoUrl,
               userLoggedIn: userLoggedIn,
               username: username,
