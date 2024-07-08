@@ -75,11 +75,16 @@ class _LoginWidgetState extends State<LoginWidget> {
                   ],
                 )),
             const SafeArea(
-                minimum: EdgeInsets.only(top: 60),
+                minimum: EdgeInsets.only(top: 60, bottom: 50),
                 child: Divider(
                   indent: 40,
                   endIndent: 40,
                 )),
+            const Text(
+              "TaskTango information blah blah",
+              style: TextStyle(
+                  color: Color.fromARGB(255, 56, 56, 56), fontSize: 12),
+            )
           ],
         ),
       ),
