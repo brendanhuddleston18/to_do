@@ -68,6 +68,12 @@ void main() async {
     return data;
   }
 
+  Future<void> deleteAll() async {
+    User user = _authenticateUser();
+
+    await supabase.from('user_tasks').delete().eq('user_id', user.id);
+  }
+
   globalDeleteTask = deleteTask;
   await AwesomeNotifications().initialize(null, [
     NotificationChannel(
@@ -91,6 +97,7 @@ void main() async {
     deleteTask: deleteTask,
     updateTask: updateTask,
     getTasks: getTasks,
+    deleteAll: deleteAll,
   ));
 }
 
@@ -101,11 +108,13 @@ class MyApp extends StatefulWidget {
     required this.insertTask,
     required this.deleteTask,
     required this.updateTask,
+    required this.deleteAll,
   });
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
   final Future<void> Function(Map task) updateTask;
+  final Future<void> Function() deleteAll;
   final Future<List<Map>> Function() getTasks;
 
   @override
@@ -226,6 +235,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         username: username,
         handleLoggedIn: handleLoggedIn,
         photoUrl: photoUrl,
+        deleteAll: widget.deleteAll,
       ),
       debugShowCheckedModeBanner: false,
       theme: currentTheme,

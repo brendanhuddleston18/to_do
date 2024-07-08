@@ -24,11 +24,13 @@ class Home extends StatefulWidget {
       required this.isLoggedIn,
       required this.username,
       required this.handleLoggedIn,
-      required this.photoUrl});
+      required this.photoUrl,
+      required this.deleteAll});
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
   final Future<void> Function(Map task) updateTask;
+  final Future<void> Function() deleteAll;
   final void Function(bool isSignedIn) handleLoggedIn;
 
   final void Function(bool isOn) handleDarkMode;
@@ -65,6 +67,7 @@ class _HomeWidgetState extends State<Home> {
         backgroundColor: widget.currentTheme.primaryContrastingColor,
         middle: Text("${widget.username}'s To Do List"),
         trailing: PullDownMenu(
+          deleteAll: widget.deleteAll,
           builder: (_, showMenu) {
             return CupertinoButton(
               onPressed: showMenu,
