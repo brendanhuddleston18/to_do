@@ -24,11 +24,13 @@ class Home extends StatefulWidget {
       required this.isLoggedIn,
       required this.username,
       required this.handleLoggedIn,
-      required this.photoUrl});
+      required this.photoUrl,
+      required this.deleteAll});
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
   final Future<void> Function(Map task) updateTask;
+  final Future<void> Function() deleteAll;
   final void Function(bool isSignedIn) handleLoggedIn;
 
   final void Function(bool isOn) handleDarkMode;
@@ -50,10 +52,10 @@ class _HomeWidgetState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    taskFuture = _getTasks();
+    taskFuture = getTasks();
   }
 
-  Future<List<Map>> _getTasks() async {
+  Future<List<Map>> getTasks() async {
     var fetchedTasks = await widget.tasksDB();
     return fetchedTasks;
   }
@@ -65,6 +67,7 @@ class _HomeWidgetState extends State<Home> {
         backgroundColor: widget.currentTheme.primaryContrastingColor,
         middle: Text("${widget.username}'s To Do List"),
         trailing: PullDownMenu(
+          deleteAll: widget.deleteAll,
           builder: (_, showMenu) {
             return CupertinoButton(
               onPressed: showMenu,
@@ -119,7 +122,7 @@ class _HomeWidgetState extends State<Home> {
                                             child: ExitButton(
                                               onCloseModal: () {
                                                 setState(() {
-                                                  taskFuture = _getTasks();
+                                                  taskFuture = getTasks();
                                                 });
                                               },
                                             ))
@@ -133,7 +136,7 @@ class _HomeWidgetState extends State<Home> {
                           handleRefresh: () {
                             setState(
                               () {
-                                taskFuture = _getTasks();
+                                taskFuture = getTasks();
                               },
                             );
                           },
@@ -171,7 +174,7 @@ class _HomeWidgetState extends State<Home> {
                       print("didn't work: $e");
                     }
                     setState(() {
-                      taskFuture = _getTasks();
+                      taskFuture = getTasks();
                     });
                   },
                 ),

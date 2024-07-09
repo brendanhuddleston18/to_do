@@ -9,13 +9,16 @@ class PullDownMenu extends StatefulWidget {
       required this.isLoggedIn,
       required this.username,
       required this.handleLoggedIn,
-      required this.photoUrl});
+      required this.photoUrl,
+      required this.deleteAll,});
 
   final PullDownMenuButtonBuilder builder;
   final bool isLoggedIn;
   final String username;
   final String photoUrl;
+
   final Function(bool isSignedIn) handleLoggedIn;
+  final Future<void> Function() deleteAll;
 
   @override
   State<PullDownMenu> createState() => _PullDownMenuState();
@@ -55,7 +58,9 @@ class _PullDownMenuState extends State<PullDownMenu> {
                 icon: CupertinoIcons.check_mark,
               ),
               PullDownMenuItem(
-                onTap: () {},
+                onTap: () {
+                  widget.deleteAll();
+                },
                 title: "Delete all Tasks",
                 icon: CupertinoIcons.trash,
               )
