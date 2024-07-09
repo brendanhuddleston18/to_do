@@ -60,6 +60,10 @@ class _HomeWidgetState extends State<Home> {
     return fetchedTasks;
   }
 
+  void testingTaskCreation() {
+    taskFuture = getTasks();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -158,6 +162,7 @@ class _HomeWidgetState extends State<Home> {
                   vertical: 20,
                 ),
                 child: TextInputWidget(
+                  testingTaskCreation: testingTaskCreation,
                   onAddTask: (String newTask) {
                     DateTime timeCreated = DateTime.now();
                     String formattedTimeCreated =
