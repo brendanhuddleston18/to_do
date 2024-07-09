@@ -52,10 +52,10 @@ class _HomeWidgetState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    taskFuture = _getTasks();
+    taskFuture = getTasks();
   }
 
-  Future<List<Map>> _getTasks() async {
+  Future<List<Map>> getTasks() async {
     var fetchedTasks = await widget.tasksDB();
     return fetchedTasks;
   }
@@ -122,7 +122,7 @@ class _HomeWidgetState extends State<Home> {
                                             child: ExitButton(
                                               onCloseModal: () {
                                                 setState(() {
-                                                  taskFuture = _getTasks();
+                                                  taskFuture = getTasks();
                                                 });
                                               },
                                             ))
@@ -136,7 +136,7 @@ class _HomeWidgetState extends State<Home> {
                           handleRefresh: () {
                             setState(
                               () {
-                                taskFuture = _getTasks();
+                                taskFuture = getTasks();
                               },
                             );
                           },
@@ -174,7 +174,7 @@ class _HomeWidgetState extends State<Home> {
                       print("didn't work: $e");
                     }
                     setState(() {
-                      taskFuture = _getTasks();
+                      taskFuture = getTasks();
                     });
                   },
                 ),
