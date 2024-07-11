@@ -189,7 +189,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
   }
 
-  // TODO: Keep an eye on if tasks generate after creation or not
   @override
   Widget build(BuildContext context) {
     handleUserInfo();
