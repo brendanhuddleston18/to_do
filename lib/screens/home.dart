@@ -97,7 +97,6 @@ class _HomeWidgetState extends State<Home> {
                       selectionColor: Colors.blue,
                     ),
                     children: tasks.map<Widget>((dynamic task) {
-                      // return const CupertinoListTile(title: Text("Hi"));
                       return CupertinoListTile(
                         key: ValueKey(task['task_id']),
                         leading: const CheckboxWidget(),
@@ -158,7 +157,7 @@ class _HomeWidgetState extends State<Home> {
                   vertical: 20,
                 ),
                 child: TextInputWidget(
-                  onAddTask: (String newTask) {
+                  onAddTask: (String newTask) async {
                     DateTime timeCreated = DateTime.now();
                     String formattedTimeCreated =
                         DateFormat('dd-MMM-yyyy - kk:mm').format(timeCreated);
@@ -169,7 +168,7 @@ class _HomeWidgetState extends State<Home> {
                         timeCreated: formattedTimeCreated,
                         reminderDate: '');
                     try {
-                      widget.insertTask(taskToAdd);
+                      await widget.insertTask(taskToAdd);
                     } catch (e) {
                       print("didn't work: $e");
                     }
