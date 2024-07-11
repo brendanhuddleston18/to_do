@@ -3,16 +3,19 @@ import 'package:pull_down_button/pull_down_button.dart';
 import 'package:to_do/screens/google_signin.dart';
 
 class PullDownMenu extends StatefulWidget {
-  const PullDownMenu(
-      {super.key,
-      required this.builder,
-      required this.isLoggedIn,
-      required this.username,
-      required this.handleLoggedIn,
-      required this.photoUrl,
-      required this.deleteAll,});
+  const PullDownMenu({
+    super.key,
+    required this.builder,
+    required this.isLoggedIn,
+    required this.username,
+    required this.handleLoggedIn,
+    required this.photoUrl,
+    required this.deleteAll,
+    required this.getTasks,
+  });
 
   final PullDownMenuButtonBuilder builder;
+  final Function() getTasks;
   final bool isLoggedIn;
   final String username;
   final String photoUrl;
@@ -60,6 +63,7 @@ class _PullDownMenuState extends State<PullDownMenu> {
               PullDownMenuItem(
                 onTap: () {
                   widget.deleteAll();
+                  widget.getTasks();
                 },
                 title: "Delete all Tasks",
                 icon: CupertinoIcons.trash,

@@ -60,6 +60,12 @@ class _HomeWidgetState extends State<Home> {
     return fetchedTasks;
   }
 
+  void refreshTasks() {
+    setState(() {
+      taskFuture = getTasks();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -67,6 +73,7 @@ class _HomeWidgetState extends State<Home> {
         backgroundColor: widget.currentTheme.primaryContrastingColor,
         middle: Text("${widget.username}'s To Do List"),
         trailing: PullDownMenu(
+          getTasks: refreshTasks,
           deleteAll: widget.deleteAll,
           builder: (_, showMenu) {
             return CupertinoButton(
