@@ -124,14 +124,14 @@ class _HomeWidgetState extends State<Home> {
                                         ),
                                         Positioned(
                                             right: 60,
-                                            top: 332,
+                                            top: 290,
                                             child: ExitButton(
                                               onCloseModal: () {
                                                 setState(() {
                                                   taskFuture = getTasks();
                                                 });
                                               },
-                                            ))
+                                            )),
                                       ],
                                     );
                                   });
