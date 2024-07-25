@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TextInputWidget extends StatefulWidget {
-  const TextInputWidget({super.key, required this.onAddTask});
+  const TextInputWidget({
+    super.key,
+    required this.onAddTask,
+  });
 
   final Function(String) onAddTask;
 

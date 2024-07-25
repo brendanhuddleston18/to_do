@@ -3,121 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class InfoDisplayButtonWidget extends StatefulWidget {
-  const InfoDisplayButtonWidget({
-    super.key,
-    required this.information,
-    required this.showModal,
-  });
-
-  final String information;
-  final Function(String) showModal;
-
-  @override
-  State<InfoDisplayButtonWidget> createState() =>
-      _InformationDisplayButtonState();
-}
-
-class _InformationDisplayButtonState extends State<InfoDisplayButtonWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(CupertinoIcons.info_circle),
-      onPressed: () {
-        widget.showModal(widget.information);
-      },
-    );
-  }
-}
-
-// ---------------------------------------------------- //
-
-class InfoEditButton extends StatefulWidget {
-  const InfoEditButton({super.key, required this.isEditing});
-
-  final Function() isEditing;
-
-  @override
-  State<InfoEditButton> createState() => _InfoEditButtonState();
-}
-
-class _InfoEditButtonState extends State<InfoEditButton> {
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(CupertinoIcons.pencil_circle),
-      onPressed: () {
-        widget.isEditing();
-      },
-    );
-  }
-}
-
-// ---------------------------------------------------- //
-
-class InfoTextBox extends StatefulWidget {
-  const InfoTextBox(
-      {super.key, required this.taskInfo, required this.reminderDate});
-
-  final String taskInfo;
-  final String reminderDate;
-
-  @override
-  State<InfoTextBox> createState() => _InfoTextBoxState();
-}
-
-class _InfoTextBoxState extends State<InfoTextBox> {
-  String timeToShow = "";
-  @override
-  Widget build(BuildContext context) {
-    setState(() {
-      timeToShow = widget.reminderDate;
-    });
-    // return Text(widget.taskInfo);
-    return Column(
-      children: [Text(widget.taskInfo), Text(timeToShow)],
-    );
-  }
-}
-
-// ---------------------------------------------------- //
-
-class InfoTextInput extends StatefulWidget {
-  const InfoTextInput({
-    super.key,
-    required this.updateTaskInfo,
-    required this.isEditing,
-  });
-
-  final Function(String) updateTaskInfo;
-  final bool isEditing;
-
-  @override
-  State<InfoTextInput> createState() => _InfoTextInputState();
-}
-
-class _InfoTextInputState extends State<InfoTextInput> {
-  TextEditingController controller = TextEditingController();
-  @override
-  Widget build(BuildContext context) {
-    bool editing = widget.isEditing;
-    if (editing == true) {
-      return CupertinoTextField(
-          controller: controller,
-          suffix: IconButton(
-            icon: const Icon(CupertinoIcons.plus),
-            onPressed: () {
-              widget.updateTaskInfo(controller.text);
-            },
-          ));
-    } else {
-      return const Text("");
-    }
-  }
-}
-
-// ---------------------------------------------------- //
-
 class InfoAlertDialog extends StatefulWidget {
   const InfoAlertDialog({
     super.key,
@@ -179,23 +64,18 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(widget.taskData["task_text"]),
-          ReminderButton(
-            handleReminder: handleReminder,
-          )
-        ],
-      ),
+      title: Text(widget.taskData["task_text"],
+          style: const TextStyle(
+            fontSize: 24,
+            color: Color.fromRGBO(69, 71, 74, 1),
+          )),
+      actions: [
+        ReminderButton(handleReminder: handleReminder),
+        InfoEditButton(isEditing: () {
+          setState(() => isEditing = true);
+        })
+      ],
       content: Column(children: [
-        Padding(
-            padding: const EdgeInsets.only(left: 140),
-            child: InfoEditButton(
-              isEditing: () {
-                setState(() => isEditing = true);
-              },
-            )),
         Padding(
             padding: const EdgeInsets.only(bottom: 40),
             child: InfoTextBox(
@@ -211,6 +91,130 @@ class _InfoAlertDialogState extends State<InfoAlertDialog> {
         ),
       ]),
     );
+  }
+}
+
+// -----------------------------------------------------------//
+
+class InfoDisplayButtonWidget extends StatefulWidget {
+  const InfoDisplayButtonWidget({
+    super.key,
+    required this.information,
+    required this.showModal,
+  });
+
+  final String information;
+  final Function(String) showModal;
+
+  @override
+  State<InfoDisplayButtonWidget> createState() =>
+      _InformationDisplayButtonState();
+}
+
+class _InformationDisplayButtonState extends State<InfoDisplayButtonWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(CupertinoIcons.info_circle),
+      onPressed: () {
+        widget.showModal(widget.information);
+      },
+    );
+  }
+}
+
+// ---------------------------------------------------- //
+
+class InfoEditButton extends StatefulWidget {
+  const InfoEditButton({super.key, required this.isEditing});
+
+  final Function() isEditing;
+
+  @override
+  State<InfoEditButton> createState() => _InfoEditButtonState();
+}
+
+class _InfoEditButtonState extends State<InfoEditButton> {
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+        child: const Text("Edit"),
+        onPressed: () {
+          widget.isEditing();
+        });
+  }
+}
+
+// ---------------------------------------------------- //
+
+class InfoTextBox extends StatefulWidget {
+  const InfoTextBox(
+      {super.key, required this.taskInfo, required this.reminderDate});
+
+  final String taskInfo;
+  final String reminderDate;
+
+  @override
+  State<InfoTextBox> createState() => _InfoTextBoxState();
+}
+
+class _InfoTextBoxState extends State<InfoTextBox> {
+  String timeToShow = "";
+  @override
+  Widget build(BuildContext context) {
+    setState(() {
+      timeToShow = widget.reminderDate;
+    });
+    // return Text(widget.taskInfo);
+    return Column(
+      children: [
+        Text(
+          timeToShow,
+          style: const TextStyle(color: Colors.red),
+        ),
+        SafeArea(
+            child: Text(
+          widget.taskInfo,
+          style: const TextStyle(color: Color.fromRGBO(69, 71, 74, 1)),
+        )),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------- //
+
+class InfoTextInput extends StatefulWidget {
+  const InfoTextInput({
+    super.key,
+    required this.updateTaskInfo,
+    required this.isEditing,
+  });
+
+  final Function(String) updateTaskInfo;
+  final bool isEditing;
+
+  @override
+  State<InfoTextInput> createState() => _InfoTextInputState();
+}
+
+class _InfoTextInputState extends State<InfoTextInput> {
+  TextEditingController controller = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    bool editing = widget.isEditing;
+    if (editing == true) {
+      return CupertinoTextField(
+          controller: controller,
+          suffix: IconButton(
+            icon: const Icon(CupertinoIcons.plus),
+            onPressed: () {
+              widget.updateTaskInfo(controller.text);
+            },
+          ));
+    } else {
+      return const Text("");
+    }
   }
 }
 
@@ -292,8 +296,8 @@ class _ReminderButtonState extends State<ReminderButton> {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-        icon: const Icon(CupertinoIcons.bell_circle),
+    return CupertinoButton(
+        child: const Text("Reminder"),
         onPressed: () {
           _showDatePicker();
         });

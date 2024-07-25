@@ -24,11 +24,13 @@ class Home extends StatefulWidget {
       required this.isLoggedIn,
       required this.username,
       required this.handleLoggedIn,
-      required this.photoUrl});
+      required this.photoUrl,
+      required this.deleteAll});
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
   final Future<void> Function(Map task) updateTask;
+  final Future<void> Function() deleteAll;
   final void Function(bool isSignedIn) handleLoggedIn;
 
   final void Function(bool isOn) handleDarkMode;
@@ -50,12 +52,18 @@ class _HomeWidgetState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    taskFuture = _getTasks();
+    taskFuture = getTasks();
   }
 
-  Future<List<Map>> _getTasks() async {
+  Future<List<Map>> getTasks() async {
     var fetchedTasks = await widget.tasksDB();
     return fetchedTasks;
+  }
+
+  void refreshTasks() {
+    setState(() {
+      taskFuture = getTasks();
+    });
   }
 
   @override
@@ -65,6 +73,8 @@ class _HomeWidgetState extends State<Home> {
         backgroundColor: widget.currentTheme.primaryContrastingColor,
         middle: Text("${widget.username}'s To Do List"),
         trailing: PullDownMenu(
+          getTasks: refreshTasks,
+          deleteAll: widget.deleteAll,
           builder: (_, showMenu) {
             return CupertinoButton(
               onPressed: showMenu,
@@ -94,7 +104,6 @@ class _HomeWidgetState extends State<Home> {
                       selectionColor: Colors.blue,
                     ),
                     children: tasks.map<Widget>((dynamic task) {
-                      // return const CupertinoListTile(title: Text("Hi"));
                       return CupertinoListTile(
                         key: ValueKey(task['task_id']),
                         leading: const CheckboxWidget(),
@@ -115,14 +124,14 @@ class _HomeWidgetState extends State<Home> {
                                         ),
                                         Positioned(
                                             right: 60,
-                                            top: 332,
+                                            top: 290,
                                             child: ExitButton(
                                               onCloseModal: () {
                                                 setState(() {
-                                                  taskFuture = _getTasks();
+                                                  taskFuture = getTasks();
                                                 });
                                               },
-                                            ))
+                                            )),
                                       ],
                                     );
                                   });
@@ -133,7 +142,7 @@ class _HomeWidgetState extends State<Home> {
                           handleRefresh: () {
                             setState(
                               () {
-                                taskFuture = _getTasks();
+                                taskFuture = getTasks();
                               },
                             );
                           },
@@ -155,7 +164,7 @@ class _HomeWidgetState extends State<Home> {
                   vertical: 20,
                 ),
                 child: TextInputWidget(
-                  onAddTask: (String newTask) {
+                  onAddTask: (String newTask) async {
                     DateTime timeCreated = DateTime.now();
                     String formattedTimeCreated =
                         DateFormat('dd-MMM-yyyy - kk:mm').format(timeCreated);
@@ -166,12 +175,12 @@ class _HomeWidgetState extends State<Home> {
                         timeCreated: formattedTimeCreated,
                         reminderDate: '');
                     try {
-                      widget.insertTask(taskToAdd);
+                      await widget.insertTask(taskToAdd);
                     } catch (e) {
                       print("didn't work: $e");
                     }
                     setState(() {
-                      taskFuture = _getTasks();
+                      taskFuture = getTasks();
                     });
                   },
                 ),

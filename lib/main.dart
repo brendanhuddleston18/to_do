@@ -68,6 +68,12 @@ void main() async {
     return data;
   }
 
+  Future<void> deleteAll() async {
+    User user = _authenticateUser();
+
+    await supabase.from('user_tasks').delete().eq('user_id', user.id);
+  }
+
   globalDeleteTask = deleteTask;
   await AwesomeNotifications().initialize(null, [
     NotificationChannel(
@@ -91,6 +97,7 @@ void main() async {
     deleteTask: deleteTask,
     updateTask: updateTask,
     getTasks: getTasks,
+    deleteAll: deleteAll,
   ));
 }
 
@@ -101,11 +108,13 @@ class MyApp extends StatefulWidget {
     required this.insertTask,
     required this.deleteTask,
     required this.updateTask,
+    required this.deleteAll,
   });
 
   final Future<void> Function(Task task) insertTask;
   final Future<void> Function(String id) deleteTask;
   final Future<void> Function(Map task) updateTask;
+  final Future<void> Function() deleteAll;
   final Future<List<Map>> Function() getTasks;
 
   @override
@@ -163,6 +172,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   String username = "User";
   String photoUrl =
       "https://www.vecteezy.com/vector-art/27708418-default-avatar-profile-icon-vector-in-flat-style";
+  String email = "email";
 
   String initialRoute = "/login";
 
@@ -173,12 +183,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (user != null) {
       username = user.userMetadata?["full_name"];
       photoUrl = user.userMetadata?["avatar_url"];
+      email = user.userMetadata?["email"];
       initialRoute = "/";
       userLoggedIn = true;
     }
   }
 
-  // TODO: Keep an eye on if tasks generate after creation or not
   @override
   Widget build(BuildContext context) {
     handleUserInfo();
@@ -202,6 +212,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               },
             ),
         '/profile': (context) => ProfileWidget(
+              email: email,
               photoUrl: photoUrl,
               userLoggedIn: userLoggedIn,
               username: username,
@@ -223,6 +234,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         username: username,
         handleLoggedIn: handleLoggedIn,
         photoUrl: photoUrl,
+        deleteAll: widget.deleteAll,
       ),
       debugShowCheckedModeBanner: false,
       theme: currentTheme,
